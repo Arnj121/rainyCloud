@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>rainyCloud - login</title>
+    <link href="http://localhost:2045/fontawesome.css" rel="stylesheet" type="text/css"/>
+    <link href="http://localhost:4000/resource/login/style.css" rel="stylesheet" type="text/css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
+    </style>
+</head>
+<body>
+    <div id="header" style="color: #4A148C">
+        <label><i class="fas fa-cloud fa-3x" style="margin-right: 10px;"></i><span style="font-size: xx-large">rainyCloud - <span id="loginsignup">Login</span></span></label>
+    </div>
+
+    <div id="login-window" style="font-weight: bold">
+        <input id="emailid" type="email" placeholder="Email ID" required autocomplete="off" style="font-family: 'Open Sans', sans-serif;font-weight: bold">
+        <input id="password" type="password" placeholder="Password" required style="font-family: 'Open Sans', sans-serif;font-weight: bold"><i class="fal fa-eye-slash" id="p1"></i>
+        <label id="error-lbl" style="font-family: 'Open Sans', sans-serif">check you'r email password</label>
+        <button id="login-lbl" style="font-family: 'Open Sans', sans-serif;font-weight: bold">Log-In</button>
+        <button id="signup-lbl" style="font-family: 'Open Sans', sans-serif;font-weight: bold">Sign Up</button>
+    </div>
+    <div id="signup-window">
+        <input id="emailid15" type="email" placeholder="Email ID" required  autocomplete="off" style="font-family: 'Open Sans', sans-serif;font-weight: bold">
+        <input id="name15" type="text" placeholder="Username" required autocomplete="off" style="font-family: 'Open Sans', sans-serif;font-weight: bold">
+        <input id="password15" type="password" placeholder="Password" required style="font-family: 'Open Sans', sans-serif;font-weight: bold"><i class="fal fa-eye-slash" id="p2"></i>
+        <label id="error-lbl15" style="font-family: 'Open Sans', sans-serif">Seems like an account exist with this email</label>
+        <button id="login-lbl15" style="font-family: 'Open Sans', sans-serif;font-weight: bold">Log-In</button>
+        <button id="signup-lbl15" style="font-family: 'Open Sans', sans-serif;font-weight: bold">Sign Up</button>
+    </div>
+</body>
+</html>
+<script src="http://localhost:4000/resource/login/script.js"></script>
