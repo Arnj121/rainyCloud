@@ -1,0 +1,29 @@
+{
+  "name": "cloud",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aes": "^0.1.0",
+    "aes-js": "^3.1.2",
+    "body-parser": "^1.19.0",
+    "cheerio": "^1.0.0-rc.3",
+    "cli-table": "^0.3.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.5",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.2.0",
+    "fs": "0.0.1-security",
+    "mongodb": "^3.6.3",
+    "nodemon": "^2.0.6",
+    "path": "^0.12.7",
+    "request-promise": "^4.2.6"
+  }
+}
