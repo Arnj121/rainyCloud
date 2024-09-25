@@ -1,28 +1,53 @@
-var fuw=0,iuw=0,fullscreen=0,editmode=0,ew=0,pw=0,dw=0,cfw=0,sw=0,share=0,abtwind=0,cfoldwin=0;
-var rw=0,cw=0,addc=0,neww=0,searchresultsshowing=0,searchtrack=-1,searchvalue=0,searchids=[];
-var currentselected = 0,contextmenuopened=0,minicontextmenuopened=0,popup=0,addpeople=0,peopleselct=0
-var Filerecieved ={},showpplwind=0,selectfile=0,selectedfilelist=[]
-var filesSelected={},vw=0,aw=0,siw=0
-var imagesSelected ={};
-var rndids={},rndlist=[],info={},searchredirest={};
-var cwd='ROOT',cwdstring='ROOT'
-var browsehistory = ['ROOT']
-var p=0,nav=0,collection=0;
-var userdetails = {'loggedin':0,'name':0,'token':0,'email':0,'password':0,'space':0}
-var searchresults={}
-var absoluteids=[];
-var curmenu='my-home',masking='Home',curcolname=0,FileSharedRecieved={};
-var status=0,oldcwdstring,newcwdstring,selectedFileToTransfer,selectedFileType;
-var FavFilesRecieved ={},CollectionList=[],collectiontoadd='',CollFilesRecieved={},shareids={}
-var filters={'image-notch':0,'file-notch':0,'folder-notch':0,'video-notch':0,'audio-notch':0},BinFilesRecieved={},trashids={}
-var ShareFilesRecieved={},peopleRecieved,searchOption=0,userinfo=0,filedblclicked=0
-var searchparam = {'searchloc':'home','owner':'all','email':0,'search-type':'all'}
-var view=0,pr=1
+let fuw=0,iuw=0,fullscreen=0,editmode=0,ew=0,pw=0,dw=0,cfw=0,sw=0,share=0,abtwind=0,cfoldwin=0;
+let rw=0,cw=0,addc=0,neww=0,searchresultsshowing=0,searchtrack=-1,searchvalue=0,searchids=[];
+let currentselected = 0,contextmenuopened=0,minicontextmenuopened=0,popup=0,addpeople=0,peopleselct=0
+let Filerecieved ={},showpplwind=0,selectfile=0,selectedfilelist=[]
+let filesSelected={},vw=0,aw=0,siw=0
+let imagesSelected ={};
+let rndids={},rndlist=[],info={},searchredirest={};
+let cwd='ROOT',cwdstring='ROOT'
+let browsehistory = ['ROOT']
+let p=0,nav=0,collection=0;
+let userdetails = {'loggedin':0,'name':0,'token':0,'email':0,'password':0,'space':0}
+let searchresults={}
+let absoluteids=[];
+let curmenu='my-home',masking='Home',curcolname=0,FileSharedRecieved={};
+let status=0,oldcwdstring,newcwdstring,selectedFileToTransfer,selectedFileType;
+let FavFilesRecieved ={},CollectionList=[],collectiontoadd='',CollFilesRecieved={},shareids={}
+let filters={'image-notch':0,'file-notch':0,'folder-notch':0,'video-notch':0,'audio-notch':0},BinFilesRecieved={},trashids={}
+let ShareFilesRecieved={},peopleRecieved,searchOption=0,userinfo=0,filedblclicked=0
+let searchparam = {'searchloc':'home','owner':'all','email':0,'search-type':'all'}
+let view=0,pr=1
 inituserdetails()
 initmenu()
 initCollections()
 getFiles()
 getnewshares()
+
+function cookieExist(name){
+    return document.cookie.split(';').some(c => {
+        return c.trim().startsWith(name + '=');
+    });
+}
+function getCookie(name){
+    return document.cookie.split(';').some(c=>{
+        if (c.trim().startsWith(name + '=')) return c.trim().split('=')[1]
+    })
+}
+function updateCookie(name,data){
+    function deleteCookie(name){
+        let d=new Date()
+        d.setMonth(d.getMonth()-1)
+        document.cookie = `${name}=;expires=${d};path='/`
+    }
+
+    let d=new Date()
+    d.setHours(d.getHours()+24)
+    console.log(d)
+    if (cookieExist(name))
+        deleteCookie(name)
+    document.cookie = `${name}=${data};expires=${d};path='/`
+}
 
 function getnewshares(t=0) {
     let xhr = new XMLHttpRequest()
@@ -38,6 +63,15 @@ function getnewshares(t=0) {
     let url = `http://localhost:4000/getsharefile?token=${userdetails['token']}&only=only`
     if(t==1)
         url = `http://localhost:4000/getsharefile?token=${userdetails['token']}&only=notonly`
+    xhr.onerror = function (){
+        if (cookieExist('getsharefile')) {
+            let c = parseInt(getCookie('getsharefile'))
+            if (c > 0) {
+                document.getElementById('shareno').innerText = c.toString()
+                document.getElementById('shareno').style.visibility = 'visible'
+            }
+        }
+    }
     xhr.open('GET',url)
     xhr.send()
 }
@@ -51,6 +85,12 @@ function initspace(){
     xhr.onreadystatechange = function () {
         if(xhr.readyState ==4){
             userdetails['space'] = parseInt(this.responseText)
+            displayspace()
+        }
+    }
+    xhr.onerror = function (){
+        if (cookieExist('getspace')){
+            userdetails['space'] = parseInt(getCookie('getspace'))
             displayspace()
         }
     }
@@ -228,61 +268,70 @@ function convertBytes(bytes){
 }
 
 document.getElementById('space-info').onclick = ()=>{
+
+    function temp(response){
+        if(response['status']==1) {
+            let l = 5 * (10 ** 9)
+            document.getElementById('video').style.width = ((response['videosize'] / l) * 100).toString() + '%'
+            document.getElementById('videocount').innerText = response['videocount']
+            document.getElementById('video-size').innerText = convertBytes(response['videosize'])
+
+            document.getElementById('audio').style.width = ((response['audiosize'] / l) * 100).toString() + '%'
+            document.getElementById('audiocount').innerText = response['audiocount']
+            document.getElementById('audio-size').innerText = convertBytes(response['audiosize'])
+
+            document.getElementById('images').style.width = ((response['imgsize'] / l) * 100).toString() + '%'
+            document.getElementById('imgcount').innerText = response['imgcount']
+            document.getElementById('img-size').innerText = convertBytes(response['imgsize'])
+
+            document.getElementById('docs').style.width = ((response['docsize'] / l) * 100).toString() + '%'
+            document.getElementById('doccount').innerText = response['doccount']
+            document.getElementById('docs-size').innerText = convertBytes(response['docsize'])
+
+            let k = l - (response['videosize'] + response['imgsize'] + response['audiosize'] + response['docsize'])
+            document.getElementById('free').style.width = ((k / l) * 100).toString() + '%'
+            document.getElementById('free-size').innerText = convertBytes(k)
+            document.getElementById('space-info-window').style.visibility = 'visible'
+            document.getElementById('blank').style.visibility = 'visible'
+        }
+        else{
+            let l = 5 * (10 ** 9)
+            document.getElementById('video').style.width = '0%'
+            document.getElementById('videocount').innerText = response['videocount']
+            document.getElementById('video-size').innerText = convertBytes(0)
+
+            document.getElementById('audio').style.width = '0%'
+            document.getElementById('audiocount').innerText = response['audiocount']
+            document.getElementById('audio-size').innerText = convertBytes(0)
+
+            document.getElementById('images').style.width = '0%'
+            document.getElementById('imgcount').innerText = response['imgcount']
+            document.getElementById('img-size').innerText = convertBytes(0)
+
+            document.getElementById('docs').style.width = '0%'
+            document.getElementById('doccount').innerText = response['doccount']
+            document.getElementById('docs-size').innerText = convertBytes(0)
+
+            let k = l
+            document.getElementById('free').style.width = ((k / l) * 100).toString() + '%'
+            document.getElementById('free-size').innerText = convertBytes(k)
+            document.getElementById('space-info-window').style.visibility = 'visible'
+            document.getElementById('blank').style.visibility = 'visible'
+        }
+    }
     siw=1
     let xhr = new XMLHttpRequest()
     xhr.onreadystatechange = function () {
         if(xhr.readyState ==4){
             let response = JSON.parse(this.response)
             console.log(response)
-            if(response['status']==1) {
-                let l = 5 * (10 ** 9)
-                document.getElementById('video').style.width = ((response['videosize'] / l) * 100).toString() + '%'
-                document.getElementById('videocount').innerText = response['videocount']
-                document.getElementById('video-size').innerText = convertBytes(response['videosize'])
+            temp(response)
 
-                document.getElementById('audio').style.width = ((response['audiosize'] / l) * 100).toString() + '%'
-                document.getElementById('audiocount').innerText = response['audiocount']
-                document.getElementById('audio-size').innerText = convertBytes(response['audiosize'])
-
-                document.getElementById('images').style.width = ((response['imgsize'] / l) * 100).toString() + '%'
-                document.getElementById('imgcount').innerText = response['imgcount']
-                document.getElementById('img-size').innerText = convertBytes(response['imgsize'])
-
-                document.getElementById('docs').style.width = ((response['docsize'] / l) * 100).toString() + '%'
-                document.getElementById('doccount').innerText = response['doccount']
-                document.getElementById('docs-size').innerText = convertBytes(response['docsize'])
-
-                let k = l - (response['videosize'] + response['imgsize'] + response['audiosize'] + response['docsize'])
-                document.getElementById('free').style.width = ((k / l) * 100).toString() + '%'
-                document.getElementById('free-size').innerText = convertBytes(k)
-                document.getElementById('space-info-window').style.visibility = 'visible'
-                document.getElementById('blank').style.visibility = 'visible'
-            }
-            else{
-                let l = 5 * (10 ** 9)
-                document.getElementById('video').style.width = '0%'
-                document.getElementById('videocount').innerText = response['videocount']
-                document.getElementById('video-size').innerText = convertBytes(0)
-
-                document.getElementById('audio').style.width = '0%'
-                document.getElementById('audiocount').innerText = response['audiocount']
-                document.getElementById('audio-size').innerText = convertBytes(0)
-
-                document.getElementById('images').style.width = '0%'
-                document.getElementById('imgcount').innerText = response['imgcount']
-                document.getElementById('img-size').innerText = convertBytes(0)
-
-                document.getElementById('docs').style.width = '0%'
-                document.getElementById('doccount').innerText = response['doccount']
-                document.getElementById('docs-size').innerText = convertBytes(0)
-
-                let k = l - 0
-                document.getElementById('free').style.width = ((k / l) * 100).toString() + '%'
-                document.getElementById('free-size').innerText = convertBytes(k)
-                document.getElementById('space-info-window').style.visibility = 'visible'
-                document.getElementById('blank').style.visibility = 'visible'
-            }
-
+        }
+    }
+    xhr.onerror = function (){
+        if (cookieExist('spaceanalysis')){
+            temp(JSON.parse(getCookie('sapceanalysis')))
         }
     }
     xhr.open('GET',`http://localhost:4000/spaceanalysis?token=${userdetails['token']}`)
@@ -304,7 +353,7 @@ document.getElementById('close-space-window').onclick = ()=>{
     document.getElementById('space-info-window').style.visibility='visible'
     document.getElementById('blank').style.visibility = 'visible'*/
 }
-var show_ppl_added=[];
+let show_ppl_added=[];
 document.getElementById('show-added-people').onclick = ()=>{
     let xhr = new XMLHttpRequest()
     xhr.onreadystatechange = function () {
@@ -376,6 +425,9 @@ document.getElementById('remove-more').onclick = ()=>{
                 displaypopup(`'${email}' has been removed from people`)
             }
         }
+        xhr.onerror = function (){
+            displaypopup('No network connection:(')
+        }
         xhr.open('DELETE',`http://localhost:4000/removepeople?token=${userdetails['token']}&email=${email}`)
         xhr.send()
     }
@@ -413,6 +465,9 @@ document.getElementById('search').oninput = (e)=>{
                 document.getElementById('search-results').style.borderTopRightRadius='0'
                 document.getElementById('search-results').style.borderTopLeftRadius='0'
             }
+        }
+        xhr.onerror = function (){
+            displaypopup('No network connection:(')
         }
         xhr.open('GET',`http://localhost:4000/search?search=${val}&token=${userdetails['token']}&searchloc=${searchparam['searchloc']}&owner=${searchparam['owner']}&email=${searchparam['email']}&searchType=${searchparam['search-type']}`)
         xhr.send()
@@ -637,6 +692,9 @@ document.getElementById('delete-all').onclick = ()=> {
                     }
                 }
             }
+            xhr.onerror = function (){
+                displaypopup('No network connection:(')
+            }
             xhr.open('DELETE', url)
             xhr.send()
         }
@@ -781,6 +839,9 @@ document.getElementById('username-ok').onclick = ()=>{
                 document.getElementById('username-back').click()
             }
         }
+        xhr.onerror = function (){
+            displaypopup('No network connection:(')
+        }
         xhr.open("PUT",`http://localhost:4000/edituser?type=name`)
         xhr.setRequestHeader('Content-Type','application/json;charset=UTF-8')
         xhr.send(JSON.stringify({'val':newusername,'email':userdetails['email']}))
@@ -803,6 +864,9 @@ document.getElementById('password-ok').onclick = ()=>{
                 document.getElementById('password-back').click()
                 userdetails['password'] = newpassword
             }
+        }
+        xhr.onerror = function (){
+            displaypopup('No network connection:(')
         }
         xhr.open("PUT",`http://localhost:4000/edituser?type=password`)
         xhr.setRequestHeader('Content-Type','application/json;charset=UTF-8')
@@ -865,6 +929,9 @@ function displaySearchResults(){
                         document.getElementById('search').value = ''
                     }
                 }
+                xhr.onerror = function (){
+                    displaypopup('No network connection:(')
+                }
                 xhr.open('GET',`http://localhost:4000/loadfile?filename=${searchredirest[e.target.id]['name']}&token=${searchredirest[e.target.id]['path']}&cwdstring=${e.target.id}`)
                 xhr.send()
             }
@@ -887,53 +954,66 @@ function displaySearchResults(){
 }
 
 function initCollections() {
+
+    function temp(res){
+        for (let i = 0; i < res.length; i++) {
+            CollectionList.push(res[i])
+            let ele = document.createElement('label')
+            ele.className = 'col-listitems'
+            ele.id=res[i]+'p'
+            let icon = document.createElement('i')
+            icon.className = 'fal fa-minus cursor'
+            icon.style.marginRight = '10px'
+            icon.id = res[i]+'rm'
+            icon.style.color='#4A148C'
+            icon.onclick = (e)=>{
+                let xhr = new XMLHttpRequest()
+                xhr.onreadystatechange = function () {
+                    if(xhr.readyState==4){
+                        document.getElementById('usercollec').removeChild(document.getElementById(e.target.id.slice(0, -2)+'p'))
+                    }
+                }
+                xhr.open('POST',`http://localhost:4000/removecol`)
+                xhr.setRequestHeader('Content-Type','application/json;charset=UTF-8')
+                xhr.send(JSON.stringify({'name':e.target.id.slice(0,-2),'token':userdetails['token']}))
+            }
+            ele.appendChild(icon)
+            let lbl = document.createElement('label')
+            lbl.className = 'cursor'
+            lbl.innerText = res[i]
+            lbl.id=res[i]
+            lbl.onclick = (e)=>{
+                cwd = 'ROOT'
+                cwdstring = 'ROOT'
+                masking='Collections'
+                browsehistory = ['collection#'+e.target.id]
+                curcolname = e.target.id
+                document.getElementById(curmenu).style.backgroundColor='whitesmoke'
+                initmenu()
+                cleanUp()
+                getCollecFiles()
+            }
+            ele.appendChild(lbl)
+            document.getElementById('usercollec').appendChild(ele)
+        }
+    }
+
     if(userdetails['token'].length!=0) {
         let xhr = new XMLHttpRequest()
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 let res = JSON.parse(this.response)
                 res = res[0];
-                for (let i = 0; i < res.length; i++) {
-                    CollectionList.push(res[i])
-                    let ele = document.createElement('label')
-                    ele.className = 'col-listitems'
-                    ele.id=res[i]+'p'
-                    let icon = document.createElement('i')
-                    icon.className = 'fal fa-minus cursor'
-                    icon.style.marginRight = '10px'
-                    icon.id = res[i]+'rm'
-                    icon.style.color='#4A148C'
-                    icon.onclick = (e)=>{
-                        let xhr = new XMLHttpRequest()
-                        xhr.onreadystatechange = function () {
-                            if(xhr.readyState==4){
-                                document.getElementById('usercollec').removeChild(document.getElementById(e.target.id.slice(0, -2)+'p'))
-                            }
-                        }
-                        xhr.open('POST',`http://localhost:4000/removecol`)
-                        xhr.setRequestHeader('Content-Type','application/json;charset=UTF-8')
-                        xhr.send(JSON.stringify({'name':e.target.id.slice(0,-2),'token':userdetails['token']}))
-                    }
-                    ele.appendChild(icon)
-                    let lbl = document.createElement('label')
-                    lbl.className = 'cursor'
-                    lbl.innerText = res[i]
-                    lbl.id=res[i]
-                    lbl.onclick = (e)=>{
-                        cwd = 'ROOT'
-                        cwdstring = 'ROOT'
-                        masking='Collections'
-                        browsehistory = ['collection#'+e.target.id]
-                        curcolname = e.target.id
-                        document.getElementById(curmenu).style.backgroundColor='whitesmoke'
-                        initmenu()
-                        cleanUp()
-                        getCollecFiles()
-                    }
-                    ele.appendChild(lbl)
-                    document.getElementById('usercollec').appendChild(ele)
-                }
+                temp(res)
+
             }
+        }
+        xhr.onerror = function (){
+            if (cookieExist('getcollection')){
+                temp(JSON.parse(getCookie('getcollection')))
+            }
+            else
+                displaypopup('No network connection:(')
         }
         xhr.open('GET', `http://localhost:4000/getcollection?token=${userdetails['token']}`)
         xhr.send()
@@ -960,23 +1040,35 @@ function inituserdetails() {
 
 document.getElementById('logout-lbl').onclick=logout
 function logout() {
+    userdetails['loggedin'] =0
+    userdetails['name'] =0
+    userdetails['token'] = 0
+    cwd = 'ROOT'
+    let d = new Date()
+    d.setFullYear(d.getFullYear()-1)
+    document.cookie=`loggedin=;expires=${d};path=/`
+    document.cookie = `name=;expires=${d};path=/`;
+    document.cookie = `token=;expires=${d};path=/`
+    document.cookie = `email=;expires=${d};path=/`
+    document.cookie = `password=;expires=${d};path=/`
+    location.replace('http://localhost:4000/loginpage')
     let xhr= new XMLHttpRequest()
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4) {
-            userdetails['loggedin'] =0
-            userdetails['name'] =0
-            userdetails['token'] = 0
-            cwd = 'ROOT'
-            let d = new Date()
-            d.setFullYear(d.getFullYear()-1)
-            document.cookie=`loggedin=;expires=${d};path=/mydrive`
-            document.cookie = `name=;expires=${d};path=/mydrive`;
-            document.cookie = `token=;expires=${d};path=/mydrive`
-            document.cookie = `email=;expires=${d};path=/mydrive`
-            document.cookie = `password=;expires=${d};path=/mydrive`
-            location.replace('http://localhost:4000/loginpage')
-        }
-    }
+    // xhr.onreadystatechange = function() {
+    //     if (xhr.readyState == 4) {
+    //         userdetails['loggedin'] =0
+    //         userdetails['name'] =0
+    //         userdetails['token'] = 0
+    //         cwd = 'ROOT'
+    //         let d = new Date()
+    //         d.setFullYear(d.getFullYear()-1)
+    //         document.cookie=`loggedin=;expires=${d};path=/mydrive`
+    //         document.cookie = `name=;expires=${d};path=/mydrive`;
+    //         document.cookie = `token=;expires=${d};path=/mydrive`
+    //         document.cookie = `email=;expires=${d};path=/mydrive`
+    //         document.cookie = `password=;expires=${d};path=/mydrive`
+    //         location.replace('http://localhost:4000/loginpage')
+    //     }
+    // }
     xhr.open('GET',`http://localhost:4000/logout?token=${userdetails['token']}`)
     xhr.send()
 }
@@ -986,7 +1078,7 @@ document.getElementById('add-people').onclick=()=>{
     document.getElementById('blank').style.visibility = 'visible'
 
 }
-var emails=[]
+let emails=[]
 document.getElementById('add-plus').onclick = ()=>{
     let email = document.getElementById('add-email-input').value
     if(email.length!=0){
@@ -1036,9 +1128,11 @@ document.getElementById('add-people-confirm').onclick = ()=>{
             document.getElementById('blank').style.visibility = 'hidden'
             peopleselct = 0
             addpeople=0
-
             displaypopup(`Poeple have been added`)
         }
+    }
+    xhr.onerror = function(){
+        displaypopup('No Network Connection!:(')
     }
     xhr.open('POST',`http://localhost:4000/addpeople?token=${userdetails['token']}`)
     xhr.setRequestHeader('Content-Type','application/json;charset=UTF-8')
@@ -1054,8 +1148,6 @@ document.getElementById('add-people-cancel').onclick = ()=>{
         document.getElementById('people-added').removeChild(document.getElementById(emails[i]))
     }
 }
-
-
 
 function cleanUp(){
     let cont = document.createElement('div');cont.id='container-lvl2'
@@ -1074,7 +1166,7 @@ function cleanUp(){
 }
 
 //sideline event listenr
-document.getElementById('my-home').onclick = (e)=>{
+document.getElementById('my-home').onclick = ()=>{
     if(collection){
         document.getElementById('collection-list').style.display='none'
         collection=0
@@ -1090,7 +1182,7 @@ document.getElementById('my-home').onclick = (e)=>{
     cleanUp()
     getFiles()
 }
-document.getElementById('favorites').onclick = (e)=>{
+document.getElementById('favorites').onclick = ()=>{
     if(collection){
         document.getElementById('collection-list').style.display='none'
         collection=0
@@ -1172,16 +1264,16 @@ document.getElementById('collection').onclick = (e)=>{
         document.getElementById(curmenu).style.color ='#4A148C'
         curmenu = e.target.id
         initmenu()
-
     }
 
 }
+
 document.getElementById('addnewcoll').onclick = ()=>{
     cw=1
     document.getElementById('create-collection-window').style.visibility='visible'
     document.getElementById('blank').style.visibility = 'visible'
-
 }
+
 document.getElementById('create-collection-confirm').onclick = () =>{
     let name = document.getElementById('name-coll').value
     document.getElementById('name-coll').value=''
@@ -1231,6 +1323,9 @@ document.getElementById('create-collection-confirm').onclick = () =>{
             ele.appendChild(lbl)
             document.getElementById('usercollec').appendChild(ele)
         }
+    }
+    xhr.onerror = function (){
+        displaypopup('No Network Connection!:(')
     }
     xhr.open('POST',`http://localhost:4000/createcollection?name=${name}&token=${userdetails['token']}`)
     xhr.send()
@@ -1573,7 +1668,7 @@ document.getElementById('save-cancel-file').onclick = ()=>{
 }
 
 //here is the deletton of file
-document.getElementById('delete').onclick=(e)=>{
+document.getElementById('delete').onclick=()=>{
     document.getElementById('right-click-contextmenu').style.visibility = 'hidden'
     let xhr = new XMLHttpRequest()
     let url;console.log(rndids[currentselected]['type'])
@@ -2514,6 +2609,9 @@ function getFavfiles(){
         }
     }
     xhr.open('GET', `http://localhost:4000/getfav?token=${userdetails['token']}`)
+    xhr.onerror = function (){
+        console.log('error')
+    }
     xhr.send()
 }
 

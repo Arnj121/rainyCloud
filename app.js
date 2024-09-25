@@ -4,8 +4,8 @@ const fileUpload = require('express-fileupload')
 const fileprocessor = require('./FileProcessor')
 const loginsignup =require('./login-signup')
 const path = require('path')
-require('dotenv').config()
 const cors = require('cors')
+require('dotenv').config()
 const corsoptions ={
     origin:'*',
     optionsSuccessStatus:200
@@ -25,6 +25,7 @@ server.get('/loginpage',(req,res)=>{
 server.get('/mainpage',(req,res)=>{
     res.sendFile(path.join(__dirname,'static','app','index.html'))
 })
+server.get('/ping',(req,res)=>{res.send({status:200})})
 server.get('/getspace',fileprocessor.getspace)
 server.post('/uploadfile',fileprocessor.uploadFile)
 server.post('/uploadimage',fileprocessor.uploadImage)
@@ -71,9 +72,9 @@ imageserver.get('/images/:token/:imagename',(req,res)=>{
     res.sendFile(path.join(__dirname,'serverimages',req.params.token,req.params.imagename))
 })
 
-server.listen(process.env.APP_PORT,()=>{
+server.listen(process.env.APP_PORT || 4000,()=>{
     console.log('we are live')
 })
-imageserver.listen(process.env.IMG_PORT,()=>{
+imageserver.listen(process.env.IMG_PORT || 3000,()=>{
     console.log('imagserver live')
 })

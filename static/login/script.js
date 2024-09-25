@@ -1,4 +1,5 @@
 console.log(document.cookie)
+var userdetails = {'loggedin':0,'name':0,'token':0,'email':0,'password':0,'space':0}
 document.getElementById('emailid').onfocus = ()=>{
     document.getElementById('error-lbl').style.visibility = 'hidden'
 }
@@ -22,11 +23,11 @@ function Login(){
             if(res['status']) {
                 let d = new Date()
                 d.setMonth(d.getMonth()+1)
-                document.cookie=`loggedin=1;expires=${d};path=/mainpage;`
-                document.cookie = `name=${res['name']};expires=${d};path=/mainpage;`;
-                document.cookie = `token=${res['token']};expires=${d};path=/mainpage;`
-                document.cookie = `email=${res['email']};expires=${d};path=/mainpage;`
-                document.cookie = `password=${res['password']};expires=${d};path=/mainpage;`
+                document.cookie=`loggedin=1;expires=${d};path=/;`
+                document.cookie = `name=${res['name']};expires=${d};path=/;`;
+                document.cookie = `token=${res['token']};expires=${d};path=/;`
+                document.cookie = `email=${res['email']};expires=${d};path=/;`
+                document.cookie = `password=${res['password']};expires=${d};path=/;`
                 location.replace(`http://localhost:4000/mainpage`)
             }
             else{
@@ -65,11 +66,11 @@ function signup(){
             if(res['status']){
                 let d = new Date()
                 d.setMonth(d.getMonth()+1)
-                document.cookie=`loggedin=1;expires=${d};path=/mainpage;`
-                document.cookie = `name=${res['name']};expires=${d};path=/mainpage;`;
-                document.cookie = `token=${res['token']};expires=${d};path=/mainpage;`
-                document.cookie = `email=${res['email']};expires=${d};path=/mainpage;`
-                document.cookie = `password=${res['password']};expires=${d};path=/mainpage;`
+                document.cookie=`loggedin=1;expires=${d};path=/;`
+                document.cookie = `name=${res['name']};expires=${d};path=/;`;
+                document.cookie = `token=${res['token']};expires=${d};path=/;`
+                document.cookie = `email=${res['email']};expires=${d};path=/;`
+                document.cookie = `password=${res['password']};expires=${d};path=/;`
                 location.replace(`http://localhost:4000/mainpage`)
             }
             else{
@@ -103,4 +104,20 @@ document.getElementById('p2').onclick = ()=>{
         document.getElementById('p2').classList.add('fa-eye-slash')
         document.getElementById('password15').type = 'password'
     }
+}
+let cookies = document.cookie
+cookies  = cookies.split(';')
+if(cookies.length==0)
+    console.log(cookies)
+for(let i=0;i<cookies.length;i++){
+    let v = cookies[i].split('=')
+    let key =v[0].replaceAll(' ','')
+    if(key == 'loggedin') userdetails['loggedin'] = 1
+    if(key == 'token') userdetails['token'] = v[1]
+    if(key == 'name') userdetails['name'] = v[1]
+    if(key == 'email') userdetails['email'] = v[1]
+    if(key=='password') userdetails['password'] = v[1]
+}
+if(userdetails['loggedin']){
+    location.replace('http://localhost:4000/mainpage')
 }
