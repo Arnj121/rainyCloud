@@ -57,6 +57,7 @@ function getnewshares(t=0) {
             if (c > 0){
                 document.getElementById('shareno').innerText = c.toString()
                 document.getElementById('shareno').style.visibility ='visible'
+                updateCookie('getsharefile',c.toString())
             }
         }
     }
@@ -84,8 +85,10 @@ function initspace(){
     let xhr = new XMLHttpRequest()
     xhr.onreadystatechange = function () {
         if(xhr.readyState ==4){
-            userdetails['space'] = parseInt(this.responseText)
+            let t=parseInt(this.responseText)
+            userdetails['space'] = t
             displayspace()
+            updateCookie('getspace',t.toString())
         }
     }
     xhr.onerror = function (){
@@ -133,26 +136,16 @@ document.onclick = (e)=>{
 
 document.body.onkeyup = (e)=>{
     if(e.key == 'Enter'){
-        if(fuw==1){
-            document.getElementById('file-upload-confirm').click()
-        }
-        if(iuw==1){
-            document.getElementById('image-upload-confirm').click()
-        }
+        if(fuw==1) document.getElementById('file-upload-confirm').click()
+        if(iuw==1) document.getElementById('image-upload-confirm').click()
         if(currentselected){
             let dblclick=document.createEvent('MouseEvents')
             dblclick.initEvent('dblclick',true,true)
             document.getElementById(currentselected).dispatchEvent(dblclick)
         }
-        if(searchresultsshowing!=0 && searchvalue!=0){
-            document.getElementById(searchvalue).click()
-        }
-        if(cfw==1){
-            document.getElementById('save-file').click()
-        }
-        if(cfoldwin==1){
-            document.getElementById('create-folder-confirm').click()
-        }
+        if(searchresultsshowing!=0 && searchvalue!=0) document.getElementById(searchvalue).click()
+        if(cfw==1) document.getElementById('save-file').click()
+        if(cfoldwin==1) document.getElementById('create-folder-confirm').click()
     }
     if(e.key == 'Backspace'){
         if(fuw==0 && iuw==0 && fullscreen==0 && editmode==0 && ew==0 && pw==0 && dw==0 && cfw==0 && rw==0 &&
@@ -160,51 +153,35 @@ document.body.onkeyup = (e)=>{
             document.getElementById('back').click()
     }
     if(e.key == 'Escape') {
-        if (currentselected) {
-            document.getElementById(currentselected).click()
-        }
-        if(ew==1){
-            document.getElementById('close-editor-window').click()
-        }if(pw==1){
-            document.getElementById('close-photo-window').click()
-        }
-        if(dw==1){
-            document.getElementById('close-detail-window').click()
-        }
-        if(cfw==1)
-            document.getElementById('save-cancel-file').click()
-        if(neww==1)
-            document.getElementById('add-new').click()
-        if(sw == 1)
-            document.getElementById('setting-icon').click()
-        if(addpeople==1)
-            document.getElementById('add-people-cancel').click()
-        if(userinfo==1)
-            document.getElementById('user-info').click()
+        if (currentselected) document.getElementById(currentselected).click()
+        if(ew==1) document.getElementById('close-editor-window').click()
+        if(pw==1) document.getElementById('close-photo-window').click()
+        if(dw==1) document.getElementById('close-detail-window').click()
+        if(cfw==1) document.getElementById('save-cancel-file').click()
+        if(neww==1) document.getElementById('add-new').click()
+        if(sw == 1) document.getElementById('setting-icon').click()
+        if(addpeople==1) document.getElementById('add-people-cancel').click()
+        if(userinfo==1) document.getElementById('user-info').click()
     }
     if(e.key == 'ArrowLeft' && currentselected && fuw==0 && iuw==0 && fullscreen==0 && editmode==0 && addc==0 && cfoldwin==0 &&
     ew==0 && pw==0 && dw==0 && cfw==0 && sw==0 && rw==0 && cw==0 && addc==0 && vw==0 && siw==0 && aw==0){
         nav = rndlist.indexOf(currentselected)
         nav--
-        if(nav<0)
-            nav = rndlist.length-1
+        if(nav<0) nav = rndlist.length-1
         document.getElementById(rndlist[nav]).click()
     }
     if(e.key == 'ArrowRight' && currentselected && fuw==0 && iuw==0 && fullscreen==0 && editmode==0 && addc==0 && cfoldwin==0 &&
         ew==0 && pw==0 && dw==0 && cfw==0 && sw==0 && rw==0 && cw==0 && vw==0 && siw==0 && aw==0){
         nav = rndlist.indexOf(currentselected)
         nav++
-        if(nav>=rndlist.length)
-            nav = 0
+        if(nav>=rndlist.length) nav = 0
         document.getElementById(rndlist[nav]).click()
     }
     if(e.key == 'ArrowDown' && searchresultsshowing==1){
         searchtrack++
         let searchkeys = Object.keys(searchredirest)
-        if(searchtrack>=searchkeys.length)
-            searchtrack=0
-        if(searchvalue!=0)
-            document.getElementById(searchvalue).style.backgroundColor='whitesmoke'
+        if(searchtrack>=searchkeys.length) searchtrack=0
+        if(searchvalue!=0) document.getElementById(searchvalue).style.backgroundColor='whitesmoke'
         searchvalue = searchkeys[searchtrack]
         document.getElementById(searchvalue).style.backgroundColor='white'
 
@@ -326,6 +303,7 @@ document.getElementById('space-info').onclick = ()=>{
             let response = JSON.parse(this.response)
             console.log(response)
             temp(response)
+            updateCookie('spaceanalysis',JSON.stringify(response))
 
         }
     }
@@ -399,6 +377,9 @@ document.getElementById('show-added-people').onclick = ()=>{
             peopleRecieved={}
             showpplwind = 1
         }
+    }
+    xhr.onerror = function (){
+        displaypopup('No network connection:(')
     }
     xhr.open('GET',`http://localhost:4000/getpeople?token=${userdetails['token']}`)
     xhr.send()
@@ -1005,7 +986,7 @@ function initCollections() {
                 let res = JSON.parse(this.response)
                 res = res[0];
                 temp(res)
-
+                updateCookie('getcollection',JSON.stringify(res))
             }
         }
         xhr.onerror = function (){
@@ -1563,6 +1544,9 @@ document.getElementById('image-upload-confirm').onclick = ()=>{
                     document.getElementById('images-selected').removeChild(document.getElementById(imagesSelected[imagesSelectedkeys[i]]['name']).parentElement)
                 }
             }
+            xhr.onerror = function (){
+                displaypopup('No network connection:(')
+            }
             xhr.open('GET',`http://localhost:4000/loadimage?filename=${filename}&token=${userdetails['token']}&cwdstring=${cwdstring}`)
             xhr.send()
         }
@@ -1618,6 +1602,9 @@ function createFolder(){
             }catch (e) {}
         }
     }
+    xhr.onerror = function (){
+        displaypopup('No network connection:(')
+    }
     xhr.open('POST',`http://localhost:4000/createfolder?name=${name}&token=${userdetails['token']}&cwd=${cwd}&cwdstring=${cwdstring}`)
     xhr.send()
 
@@ -1654,6 +1641,9 @@ document.getElementById('save-file').onclick = ()=>{
                 document.getElementById('container-lvl2').removeChild(document.getElementById('nothing'))
             }catch (e) {}
         }
+    }
+    xhr.onerror = function (){
+        displaypopup('No network connection:(')
     }
     xhr.open('POST',`http://localhost:4000/createfile?token=${userdetails['token']}&data=${data}&name=${name}&lastmod=${lastmod}&cwdstring=${cwdstring}&size=${data.length}`)
     xhr.setRequestHeader('Content-Type','application/json;charset=UTF-8')
@@ -1697,6 +1687,9 @@ document.getElementById('delete').onclick=()=>{
             }
         }
     }
+    xhr.onerror = function (){
+        displaypopup('No network connection:(')
+    }
     xhr.open('DELETE',url)
     xhr.send()
 }
@@ -1728,6 +1721,9 @@ document.getElementById('rename-confirm').onclick = ()=>{
             rw=0
         }
     }
+    xhr.onerror = function (){
+        displaypopup('No network connection:(')
+    }
     xhr.open('PUT',url)
     xhr.send()
 
@@ -1746,11 +1742,7 @@ document.getElementById('download').onclick = ()=>{
     currentselected=0
 }
 
-
-
-document.getElementById('details').onclick = displaydetail
-
-function displaydetail(){
+document.getElementById('details').onclick = function(){
     document.getElementById('right-click-contextmenu').style.visibility = 'hidden'
     let information = info[currentselected]
     if(information['name'] != undefined)
@@ -1794,7 +1786,6 @@ function displaydetail(){
 
     document.getElementById('details-window').style.visibility = 'visible'
     document.getElementById('blank').style.visibility = 'visible'
-
 }
 
 document.getElementById('close-detail-window').onclick = ()=>{
@@ -1819,6 +1810,9 @@ document.getElementById('fav').onclick = ()=>{
         if(xhr.readyState == 4){
             displaypopup(`'${filename}' added to Favorites`)
         }
+    }
+    xhr.onerror = function (){
+        displaypopup('No network connection:(')
     }
     xhr.open('POST',`http://localhost:4000/addfav?token=${userdetails['token']}&cwdstring=${cwdstring}&filename=${filename}&type=${type}`)
     xhr.send()
@@ -1874,6 +1868,9 @@ document.getElementById('add-confirm').onclick = ()=>{
             document.getElementById('blank').style.visibility = 'hidden'
         }
     }
+    xhr.onerror = function (){
+        displaypopup('No network connection:(')
+    }
     xhr.open('POST',`http://localhost:4000/addtocollection?cname=${cname}&type=${type}&name=${name}&token=${userdetails['token']}&cwdstring=${cwdstring}`)
     xhr.send()
 }
@@ -1901,6 +1898,9 @@ document.getElementById('sharethis').onclick = ()=>{
             document.getElementById('share-window').style.visibility='visible'
             document.getElementById('blank').style.visibility = 'visible'
         }
+    }
+    xhr.onerror = function (){
+        displaypopup('No network connection:(')
     }
     xhr.open('GET',`http://localhost:4000/getpeople?token=${userdetails['token']}`)
     xhr.send()
@@ -1946,6 +1946,9 @@ function shareFile(){
             }
         }
     }
+    xhr.onerror = function (){
+        displaypopup('No network connection:(')
+    }
     xhr.open('POST',`http://localhost:4000/sharefile?select=${select}&email=${email}&token=${userdetails['token']}&cwdstring=${cwdstring}`)
     xhr.setRequestHeader('Content-Type','application/json;charset=UTF-8')
     xhr.send(JSON.stringify(info[currentselected]))
@@ -1988,6 +1991,9 @@ document.getElementById('paste').onclick = ()=>{
                 cleanUp()
                 getFiles()
             }
+        }
+        xhr.onerror = function (){
+            displaypopup('No network connection:(')
         }
         xhr.open('POST', `http://localhost:4000/transfer?oldcwdstring=${oldcwdstring}&newcwdstring=${newcwdstring}&token=${userdetails['token']}&status=${status}&type=${type}&filename=${filename}`)
         xhr.send()
@@ -2125,6 +2131,9 @@ document.getElementById('edit-file').onclick =()=>{
                     displaypopup(`file '${info[filedblclicked]['name']}' cannot be saved`)
                 }
             }
+        }
+        xhr.onerror = function (){
+            displaypopup('No network connection:(')
         }
         xhr.open('POST',`http://localhost:4000/savefile?token=${userdetails['token']}`)
         xhr.setRequestHeader('Content-Type','application/json;charset=UTF-8')
@@ -2296,6 +2305,9 @@ function eventListeners(all=1,work=0) {
                             document.getElementById('editor-window').style.visibility = 'visible'
                             ew = 1
                         }
+                    }
+                    xhr.onerror = function (){
+                        displaypopup('No network connection:(')
                     }
                     xhr.open('GET', url)
                     xhr.send()
@@ -2602,16 +2614,23 @@ function getFavfiles(){
     xhr.onreadystatechange = function(){
         if(xhr.readyState == 4 && xhr.status == 200){
             FavFilesRecieved = JSON.parse(this.response)
+            updateCookie('getfav',JSON.stringify(FavFilesRecieved))
             ShowFiles(FavFilesRecieved)
             showremovefavicon()
             eventListeners()
             showNav()
         }
     }
-    xhr.open('GET', `http://localhost:4000/getfav?token=${userdetails['token']}`)
     xhr.onerror = function (){
-        console.log('error')
+        FavFilesRecieved = JSON.parse(getCookie('getfav'))
+        updateCookie('getfav',JSON.stringify(FavFilesRecieved))
+        ShowFiles(FavFilesRecieved)
+        showremovefavicon()
+        eventListeners()
+        showNav()
+        displaypopup('No network connection:(')
     }
+    xhr.open('GET', `http://localhost:4000/getfav?token=${userdetails['token']}`)
     xhr.send()
 }
 
@@ -2620,10 +2639,19 @@ function getsharefiles() {
     xhr.onreadystatechange = function () {
         if(xhr.readyState==4 && xhr.status==200){
             ShareFilesRecieved = JSON.parse(this.response)
+            updateCookie('getsharefile',JSON.stringify(ShareFilesRecieved))
             ShowFiles(ShareFilesRecieved)
             eventListeners()
             showNav()
         }
+    }
+    xhr.onerror = function (){
+        ShareFilesRecieved = JSON.parse(getCookie('getsharefile'))
+        updateCookie('getsharefile',JSON.stringify(ShareFilesRecieved))
+        ShowFiles(ShareFilesRecieved)
+        eventListeners()
+        showNav()
+        displaypopup('No network connection:(')
     }
     xhr.open('GET',`http://localhost:4000/getsharefile?token=${userdetails['token']}&only=all`)
     xhr.send()
@@ -2633,11 +2661,20 @@ function getCollecFiles() {
     xhr.onreadystatechange = ()=>{
         if(xhr.readyState==4 && xhr.status == 200){
             CollFilesRecieved = JSON.parse(xhr.response)
+            updateCookie('listcollection',JSON.stringify(CollFilesRecieved))
             ShowFiles(CollFilesRecieved)
             eventListeners()
             showremovefromcol()
             showNav()
         }
+    }
+    xhr.onerror = function (){
+        CollFilesRecieved = JSON.parse(getCookie('listcollection'))
+        ShowFiles(CollFilesRecieved)
+        eventListeners()
+        showremovefromcol()
+        showNav()
+        displaypopup('No network connection:(')
     }
     xhr.open('GET',`http://localhost:4000/listcollection?token=${userdetails['token']}&cname=${curcolname}`)
     xhr.send()
@@ -2648,11 +2685,20 @@ function getfilesshared() {
     xhr.onreadystatechange = function () {
         if(xhr.readyState==4 && xhr.status==200){
             FileSharedRecieved=JSON.parse(this.response)
+            updateCookie('getfilesshared',JSON.stringify(FileSharedRecieved))
             ShowFiles(FileSharedRecieved)
             showStopSharingicon()
             eventListeners()
             showNav()
         }
+    }
+    xhr.onerror = function (){
+        FileSharedRecieved=JSON.parse(getCookie('getfilesshared'))
+        ShowFiles(FileSharedRecieved)
+        showStopSharingicon()
+        eventListeners()
+        showNav()
+        displaypopup('No network connection:(')
     }
     xhr.open('GET',`http://localhost:4000/getfilesshared?token=${userdetails['token']}`)
     xhr.send()
@@ -2663,11 +2709,20 @@ function getBinFiles() {
     xhr.onreadystatechange = function () {
         if(xhr.readyState==4 && xhr.status==200){
             BinFilesRecieved=JSON.parse(this.response)
+            updateCookie('getbinfiles',JSON.stringify(BinFilesRecieved))
             ShowFiles(BinFilesRecieved)
             eventListeners()
             showNav()
             showTrashIcon()
         }
+    }
+    xhr.onerror = function (){
+        BinFilesRecieved=JSON.parse(getCookie('listbinfiles'))
+        ShowFiles(BinFilesRecieved)
+        eventListeners()
+        showNav()
+        showTrashIcon()
+        displaypopup('No network connection:(')
     }
     xhr.open('GET',`http://localhost:4000/listbinfiles?token=${userdetails['token']}&bin=1`)
     xhr.send()
@@ -2714,6 +2769,9 @@ function showTrashIcon() {
                     }
                 }
             }
+            xhr.onerror = function (){
+                displaypopup('No network connection:(')
+            }
             xhr.open('POST',`http://localhost:4000/restorefile?token=${userdetails['token']}`)
             xhr.setRequestHeader('Content-Type','application/json;charset=UTF-8')
             xhr.send(JSON.stringify({'filename':filename,'cwdstring':info[trashids[e.target.id]]['cwd']}))
@@ -2754,6 +2812,9 @@ function showStopSharingicon() {
                     }
                 }
             }
+            xhr.onerror = function (){
+                displaypopup('No network connection:(')
+            }
             xhr.open('POST',`http://localhost:4000/stopsharing?token=${userdetails['token']}`)
             xhr.setRequestHeader('Content-Type','application/json;charset=UTF-8')
             xhr.send(JSON.stringify({'filename':filename,'cwdstring':info[shareids[e.target.id]]['cwd']}))
@@ -2791,6 +2852,9 @@ function showremovefavicon(){
                     }
                 }
             }
+            xhr.onerror = function (){
+                displaypopup('No network connection:(')
+            }
             xhr.open('POST','http://localhost:4000/removefav')
             xhr.setRequestHeader('Content-Type','application/json;charset=UTF-8')
             xhr.send(JSON.stringify({'token':userdetails['token'],'cwd':info[id]['cwd'],'name':info[id]['name']}))
@@ -2799,7 +2863,7 @@ function showremovefavicon(){
     }
 }
 
-function  showremovefromcol() {
+function showremovefromcol() {
     let keys = Object.keys(rndids)
     for(let i=0;i<keys.length;i++){
         let ele = document.createElement('i')
@@ -2827,6 +2891,9 @@ function  showremovefromcol() {
                         document.getElementById('container-lvl2').appendChild(ele)
                     }
                 }
+            }
+            xhr.onerror = function (){
+                displaypopup('No network connection:(')
             }
             xhr.open('POST','http://localhost:4000/removefromcol')
             xhr.setRequestHeader('Content-Type','application/json;charset=UTF-8')
@@ -2856,11 +2923,20 @@ function getFiles() {
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
                 Filerecieved = JSON.parse(this.response)
+                updateCookie('listallfiles',JSON.stringify(Filerecieved))
                 console.log(Filerecieved)
                 ShowFiles(Filerecieved)
                 eventListeners()
                 showNav()
             }
+        }
+        xhr.onerror = function (){
+            Filerecieved = JSON.parse(getCookie('listallfiles'))
+            console.log(Filerecieved)
+            ShowFiles(Filerecieved)
+            eventListeners()
+            showNav()
+            displaypopup('No network connection:(')
         }
         xhr.open('GET', `http://localhost:4000/listallfiles?token=${userdetails['token']}&cwd=${cwd}&cwdstring=${cwdstring}`)
         xhr.send()
