@@ -2,7 +2,9 @@ let fuw=0,iuw=0,fullscreen=0,editmode=0,ew=0,pw=0,dw=0,cfw=0,sw=0,share=0,abtwin
 let rw=0,cw=0,addc=0,neww=0,searchresultsshowing=0,searchtrack=-1,searchvalue=0,searchids=[];
 let currentselected = 0,contextmenuopened=0,minicontextmenuopened=0,popup=0,addpeople=0,peopleselct=0
 let Filerecieved ={},showpplwind=0,selectfile=0,selectedfilelist=[]
-let filesSelected={},vw=0,aw=0,siw=0
+let filesSelected={},vw=0,aw=0,siw=0, lightmode=1
+let darkcolors={label:'#ffb74d',bgcolor:'#212121',fgcolor:'#424242',iconcolor:'#424242'}
+let lightcolors={label:'#4A148C',bgcolor:'white',fgcolor:'whitesmoke',iconcolor:'#c5c5c4'}
 let imagesSelected ={};
 let rndids={},rndlist=[],info={},searchredirest={};
 let cwd='ROOT',cwdstring='ROOT'
@@ -77,8 +79,14 @@ function getnewshares(t=0) {
     xhr.send()
 }
 function initmenu() {
-    document.getElementById(curmenu).style.backgroundColor='whitesmoke'
-    document.getElementById(curmenu).style.color='#FFAB00'
+    if (lightmode){
+        document.getElementById(curmenu).style.backgroundColor=lightcolors.fgcolor
+        document.getElementById(curmenu).style.color =lightcolors.label
+    }
+    else{
+        document.getElementById(curmenu).style.backgroundColor=darkcolors.fgcolor
+        document.getElementById(curmenu).style.color =darkcolors.label
+    }
 }
 
 function initspace(){
@@ -331,6 +339,153 @@ document.getElementById('close-space-window').onclick = ()=>{
     document.getElementById('space-info-window').style.visibility='visible'
     document.getElementById('blank').style.visibility = 'visible'*/
 }
+
+
+document.getElementById('light-dark-mode').onclick= ()=>{
+    if (lightmode){
+        lightmode=0
+        document.getElementById('light-dark-mode-label').innerText='Dark'
+        document.getElementById('light-dark-mode').className='fas fa-moon'
+        document.body.style.backgroundColor=darkcolors.bgcolor
+        document.getElementById('rainyCloudLabel').style.color=darkcolors.label
+        document.getElementById('my-home').style.color=
+            document.getElementById('favorites').style.color=
+                document.getElementById('bin').style.color=
+                    document.getElementById('share').style.color=
+                        document.getElementById('files-shared').style.color=
+                            document.getElementById('collection').style.color=
+                                document.getElementById('collection-list').style.color=darkcolors.label
+        document.getElementById('my-home').style.backgroundColor=
+            document.getElementById('favorites').style.backgroundColor=
+                document.getElementById('bin').style.backgroundColor=
+                    document.getElementById('share').style.backgroundColor=
+                        document.getElementById('files-shared').style.backgroundColor=
+                            document.getElementById('collection').style.backgroundColor=
+                                document.getElementById('collection-list').style.backgroundColor=darkcolors.bgcolor
+
+        document.getElementById('space-used').style.color=darkcolors.label
+        document.getElementById('search').style.backgroundColor=darkcolors.fgcolor
+        document.getElementById('search-settings-window').style.backgroundColor=darkcolors.fgcolor
+        document.getElementById('search-results').style.backgroundColor=darkcolors.fgcolor
+
+        document.getElementById('light-dark-mode').style.color=
+            document.getElementById('show-added-people').style.color=
+                document.getElementById('user-info').style.color=
+                    document.getElementById('setting-icon').style.color=darkcolors.iconcolor
+
+        for(let i of document.querySelectorAll('#side-options div label')){
+            i.style.color=darkcolors.label
+        }
+        for(let i of document.querySelectorAll('#search-settings-window label')){
+            i.style.color= darkcolors.label
+        }
+        document.querySelector('#add-new span').style.color=darkcolors.label
+        document.getElementById('add-new').style.backgroundColor=darkcolors.bgcolor
+        document.getElementById('add-new').style.borderColor=darkcolors.label
+
+        document.getElementById('right-click-contextmenu').style.backgroundColor=darkcolors.bgcolor
+        document.getElementById('right-click-contextmenu').style.borderColor=darkcolors.label
+        document.getElementById('right-click-contextmenu').style.color=lightcolors.fgcolor
+        document.getElementById('right-click-contextmenu-paste').style.backgroundColor=darkcolors.bgcolor
+        document.getElementById('right-click-contextmenu-paste').style.borderColor=darkcolors.label
+        document.getElementById('right-click-contextmenu-paste').style.color=lightcolors.fgcolor
+
+        document.getElementById('add-new-child').style.backgroundColor=darkcolors.bgcolor
+        document.getElementById('add-new-child').style.borderColor=darkcolors.label
+        for(let i of document.querySelectorAll('#add-new-child label')){
+            i.style.color= darkcolors.label
+        }
+        document.getElementById('back').style.color=lightcolors.fgcolor
+        for(let i of document.querySelectorAll('.arrow')) {
+            i.style.color = lightcolors.fgcolor
+        }
+        for(let i of document.querySelectorAll('#nav-display label')) {
+            i.style.color = darkcolors.label
+        }
+        document.getElementById('filter-lbl').style.color=darkcolors.label
+        initmenu()
+
+        for (let i of document.querySelectorAll(".filter-obj")){
+            i.style.backgroundColor=darkcolors.fgcolor
+            i.style.color=darkcolors.label
+        }
+        document.getElementById('space-info-window').style.backgroundColor=darkcolors.bgcolor
+        document.querySelector('#space-info-window label').style.color=darkcolors.label
+        for (let i of document.querySelectorAll('.storage-obj label'))
+            i.style.color=darkcolors.label
+        document.getElementById('close-space-window').style.color=lightcolors.fgcolor
+    }
+    else{
+        lightmode=1
+        document.getElementById('light-dark-mode-label').innerText='Light'
+        document.getElementById('light-dark-mode').className='fal fa-moon'
+        document.body.style.backgroundColor=lightcolors.bgcolor
+        document.getElementById('rainyCloudLabel').style.color=lightcolors.label
+
+        document.getElementById('my-home').style.color=
+            document.getElementById('favorites').style.color=
+                document.getElementById('bin').style.color=
+                    document.getElementById('share').style.color=
+                        document.getElementById('files-shared').style.color=
+                            document.getElementById('collection').style.color=
+                                document.getElementById('collection-list').style.color=lightcolors.label
+        document.getElementById('my-home').style.backgroundColor=
+            document.getElementById('favorites').style.backgroundColor=
+                document.getElementById('bin').style.backgroundColor=
+                    document.getElementById('share').style.backgroundColor=
+                        document.getElementById('files-shared').style.backgroundColor=
+                            document.getElementById('collection').style.backgroundColor=
+                                document.getElementById('collection-list').style.backgroundColor=lightcolors.bgcolor
+
+        document.getElementById('space-used').style.color=lightcolors.label
+        document.getElementById('search').style.backgroundColor=lightcolors.fgcolor
+        document.getElementById('search-settings-window').style.backgroundColor=lightcolors.fgcolor
+        document.getElementById('search-results').style.backgroundColor=lightcolors.fgcolor
+
+        document.getElementById('light-dark-mode').style.color=
+            document.getElementById('show-added-people').style.color=
+                document.getElementById('user-info').style.color=
+                    document.getElementById('setting-icon').style.color=lightcolors.iconcolor
+
+        for(let i of document.querySelectorAll('#side-options div label')){
+            i.style.color=lightcolors.label
+        }
+        for(let i of document.querySelectorAll('#search-settings-window label')){
+            i.style.color= lightcolors.label
+        }
+        document.querySelector('#add-new span').style.color=lightcolors.label
+        document.getElementById('add-new').style.backgroundColor=lightcolors.bgcolor
+        document.getElementById('add-new').style.borderColor=lightcolors.label
+
+        document.getElementById('right-click-contextmenu').style.backgroundColor=lightcolors.bgcolor
+        document.getElementById('right-click-contextmenu').style.borderColor='#d1d1d0'
+        document.getElementById('right-click-contextmenu').style.color=darkcolors.bgcolor
+        document.getElementById('right-click-contextmenu-paste').style.backgroundColor=lightcolors.bgcolor
+        document.getElementById('right-click-contextmenu-paste').style.borderColor='#d1d1d0'
+        document.getElementById('right-click-contextmenu-paste').style.color=darkcolors.bgcolor
+
+        document.getElementById('add-new-child').style.backgroundColor=lightcolors.bgcolor
+        document.getElementById('add-new-child').style.borderColor=lightcolors.label
+        for(let i of document.querySelectorAll('#add-new-child label')){
+            i.style.color= 'black'
+        }
+        document.getElementById('back').style.color=darkcolors.bgcolor
+        for(let i of document.querySelectorAll('.arrow')) {
+            i.style.color = darkcolors.bgcolor
+        }
+        for(let i of document.querySelectorAll('#nav-display label')) {
+            i.style.color = lightcolors.label
+        }
+        document.getElementById('filter-lbl').style.color=lightcolors.label
+        initmenu()
+        for (let i of document.querySelectorAll(".filter-obj")){
+            i.style.backgroundColor=lightcolors.fgcolor
+            i.style.color=lightcolors.label
+
+        }
+    }
+}
+
 let show_ppl_added=[];
 document.getElementById('show-added-people').onclick = ()=>{
     let xhr = new XMLHttpRequest()
@@ -474,48 +629,87 @@ document.getElementById('search').oninput = (e)=>{
 document.getElementById('image-filter').onclick = ()=>{
     if(filters['image-notch'] ==0 ){
         filters['image-notch'] = 1
-        document.getElementById('image-filter').style.backgroundColor='black'
-        document.getElementById('image-notch').style.color ='#FFA615'
-        document.getElementById('image-filter').style.color = 'white'
+        if(lightmode) {
+            document.getElementById('image-filter').style.backgroundColor = darkcolors.fgcolor
+            document.getElementById('image-notch').style.color = darkcolors.label
+            document.getElementById('image-filter').style.color = lightcolors.bgcolor
+        }
+        else{
+            document.getElementById('image-filter').style.backgroundColor = lightcolors.fgcolor
+            document.getElementById('image-filter').style.color = darkcolors.fgcolor
+        }
         RelaodWithFilter()
     }
     else{
         filters['image-notch'] =0
-        document.getElementById('image-filter').style.backgroundColor='whitesmoke'
-        document.getElementById('image-notch').style.color ='#FF4081'
-        document.getElementById('image-filter').style.color = '#4A148C'
+        if(lightmode) {
+            document.getElementById('image-filter').style.backgroundColor = lightcolors.fgcolor
+            document.getElementById('image-notch').style.color = '#FF4081'
+            document.getElementById('image-filter').style.color = lightcolors.label
+        }
+        else{
+            document.getElementById('image-filter').style.backgroundColor = darkcolors.iconcolor
+            document.getElementById('image-notch').style.color = '#FF4081'
+            document.getElementById('image-filter').style.color = darkcolors.label
+        }
         RelaodWithFilter()
     }
 }
 document.getElementById('file-filter').onclick = ()=>{
     if(filters['file-notch'] ==0 ){
         filters['file-notch'] = 1
-        document.getElementById('file-filter').style.backgroundColor='black'
-        document.getElementById('file-notch').style.color ='#FFA615'
-        document.getElementById('file-filter').style.color = 'white'
+        if(lightmode) {
+            document.getElementById('file-filter').style.backgroundColor = darkcolors.fgcolor
+            document.getElementById('file-notch').style.color = darkcolors.label
+            document.getElementById('file-filter').style.color = lightcolors.bgcolor
+        }
+        else{
+            document.getElementById('file-filter').style.backgroundColor = lightcolors.fgcolor
+            document.getElementById('file-filter').style.color = darkcolors.fgcolor
+        }
         RelaodWithFilter()
     }
     else{
         filters['file-notch'] =0
-        document.getElementById('file-filter').style.backgroundColor='whitesmoke'
-        document.getElementById('file-notch').style.color ='#FF4081'
-        document.getElementById('file-filter').style.color = '#4A148C'
+        if(lightmode) {
+            document.getElementById('file-filter').style.backgroundColor = lightcolors.fgcolor
+            document.getElementById('file-notch').style.color = '#FF4081'
+            document.getElementById('file-filter').style.color = lightcolors.label
+        }
+        else{
+            document.getElementById('file-filter').style.backgroundColor = darkcolors.iconcolor
+            document.getElementById('file-notch').style.color = '#FF4081'
+            document.getElementById('file-filter').style.color = darkcolors.label
+        }
         RelaodWithFilter()
     }
 }
 document.getElementById('folder-filter').onclick = ()=>{
     if(filters['folder-notch'] ==0 ){
         filters['folder-notch'] = 1
-        document.getElementById('folder-filter').style.backgroundColor='black'
-        document.getElementById('folder-notch').style.color ='#FFA615'
-        document.getElementById('folder-filter').style.color = 'white'
+        if(lightmode) {
+            document.getElementById('folder-filter').style.backgroundColor = darkcolors.fgcolor
+            document.getElementById('folder-notch').style.color = darkcolors.label
+            document.getElementById('folder-filter').style.color = lightcolors.bgcolor
+        }
+        else{
+            document.getElementById('folder-filter').style.backgroundColor = lightcolors.fgcolor
+            document.getElementById('folder-filter').style.color = darkcolors.fgcolor
+        }
         RelaodWithFilter()
     }
     else{
         filters['folder-notch'] =0
-        document.getElementById('folder-filter').style.backgroundColor='whitesmoke'
-        document.getElementById('folder-notch').style.color ='#FF4081'
-        document.getElementById('folder-filter').style.color = '#4A148C'
+        if(lightmode) {
+            document.getElementById('folder-filter').style.backgroundColor = lightcolors.fgcolor
+            document.getElementById('folder-notch').style.color = '#FF4081'
+            document.getElementById('folder-filter').style.color = lightcolors.label
+        }
+        else{
+            document.getElementById('folder-filter').style.backgroundColor = darkcolors.iconcolor
+            document.getElementById('folder-notch').style.color = '#FF4081'
+            document.getElementById('folder-filter').style.color = darkcolors.label
+        }
         RelaodWithFilter()
     }
 }
@@ -523,32 +717,58 @@ document.getElementById('folder-filter').onclick = ()=>{
 document.getElementById('video-filter').onclick = ()=>{
     if(filters['video-notch'] ==0 ){
         filters['video-notch'] = 1
-        document.getElementById('video-filter').style.backgroundColor='black'
-        document.getElementById('video-notch').style.color ='#FFA615'
-        document.getElementById('video-filter').style.color = 'white'
+        if(lightmode) {
+            document.getElementById('video-filter').style.backgroundColor = darkcolors.fgcolor
+            document.getElementById('video-notch').style.color = darkcolors.label
+            document.getElementById('video-filter').style.color = lightcolors.bgcolor
+        }
+        else{
+            document.getElementById('video-filter').style.backgroundColor = lightcolors.fgcolor
+            document.getElementById('video-filter').style.color = darkcolors.fgcolor
+        }
         RelaodWithFilter()
     }
     else{
         filters['video-notch'] =0
-        document.getElementById('video-filter').style.backgroundColor='whitesmoke'
-        document.getElementById('video-notch').style.color ='#FF4081'
-        document.getElementById('video-filter').style.color = '#4A148C'
+        if(lightmode) {
+            document.getElementById('video-filter').style.backgroundColor = lightcolors.fgcolor
+            document.getElementById('video-notch').style.color = '#FF4081'
+            document.getElementById('video-filter').style.color = lightcolors.label
+        }
+        else{
+            document.getElementById('video-filter').style.backgroundColor = darkcolors.iconcolor
+            document.getElementById('video-notch').style.color = '#FF4081'
+            document.getElementById('video-filter').style.color = darkcolors.label
+        }
         RelaodWithFilter()
     }
 }
 document.getElementById('audio-filter').onclick = ()=>{
     if(filters['audio-notch'] ==0 ){
         filters['audio-notch'] = 1
-        document.getElementById('audio-filter').style.backgroundColor='black'
-        document.getElementById('audio-notch').style.color ='#FFA615'
-        document.getElementById('audio-filter').style.color = 'white'
+        if(lightmode) {
+            document.getElementById('audio-filter').style.backgroundColor = darkcolors.fgcolor
+            document.getElementById('audio-notch').style.color = darkcolors.label
+            document.getElementById('audio-filter').style.color = lightcolors.bgcolor
+        }
+        else{
+            document.getElementById('audio-filter').style.backgroundColor = lightcolors.fgcolor
+            document.getElementById('audio-filter').style.color = darkcolors.fgcolor
+        }
         RelaodWithFilter()
     }
     else{
         filters['audio-notch'] =0
-        document.getElementById('audio-filter').style.backgroundColor='whitesmoke'
-        document.getElementById('audio-notch').style.color ='#FF4081'
-        document.getElementById('audio-filter').style.color = '#4A148C'
+        if(lightmode) {
+            document.getElementById('audio-filter').style.backgroundColor = lightcolors.fgcolor
+            document.getElementById('audio-notch').style.color = '#FF4081'
+            document.getElementById('audio-filter').style.color = lightcolors.label
+        }
+        else{
+            document.getElementById('audio-filter').style.backgroundColor = darkcolors.iconcolor
+            document.getElementById('audio-notch').style.color = '#FF4081'
+            document.getElementById('audio-filter').style.color = darkcolors.label
+        }
         RelaodWithFilter()
     }
 }
@@ -598,9 +818,16 @@ function RelaodWithFilter() {
 document.getElementById('select-file').onclick = ()=>{
     if(selectfile==1) {
         selectfile = 0
-        document.getElementById('select-file').style.backgroundColor = 'whitesmoke'
-        document.getElementById('select-file').style.color = '#4A148C'
-        document.getElementById('check').style.color ='#ff4081'
+        if(lightmode) {
+            document.getElementById('select-file').style.backgroundColor = lightcolors.fgcolor
+            document.getElementById('select-file').style.color = darkcolors.fgcolor
+            document.getElementById('check').style.color = '#ff4081'
+        }
+        else{
+            document.getElementById('select-file').style.backgroundColor = darkcolors.iconcolor
+            document.getElementById('select-file').style.color = darkcolors.label
+            document.getElementById('check').style.color = '#ff4081'
+        }
         for (let i = 0; i < selectedfilelist.length; i++) {
             try{
                 document.getElementById(selectedfilelist[i]).removeChild(document.getElementsByTagName('i')[0])
@@ -613,9 +840,16 @@ document.getElementById('select-file').onclick = ()=>{
     }
     else{
         selectfile=1
-        document.getElementById('select-file').style.backgroundColor = 'black'
-        document.getElementById('select-file').style.color='white'
-        document.getElementById('check').style.color = '#3FFF4D'
+        if(lightmode) {
+            document.getElementById('select-file').style.backgroundColor = 'black'
+            document.getElementById('select-file').style.color = 'white'
+            document.getElementById('check').style.color = '#3FFF4D'
+        }
+        else{
+            document.getElementById('select-file').style.backgroundColor = lightcolors.fgcolor
+            document.getElementById('select-file').style.color = darkcolors.fgcolor
+            document.getElementById('check').style.color = '#3FFF4D'
+        }
     }
 }
 function addcheck(id){
@@ -1155,8 +1389,14 @@ document.getElementById('my-home').onclick = ()=>{
     cwd = 'ROOT'
     cwdstring = 'ROOT'
     masking='Home'
-    document.getElementById(curmenu).style.backgroundColor='white'
-    document.getElementById(curmenu).style.color ='#4A148C'
+    if (lightmode){
+        document.getElementById(curmenu).style.backgroundColor=lightcolors.fgcolor
+        document.getElementById(curmenu).style.color =lightcolors.label
+    }
+    else{
+        document.getElementById(curmenu).style.backgroundColor=darkcolors.bgcolor
+        document.getElementById(curmenu).style.color =darkcolors.label
+    }
     curmenu = 'my-home'
     initmenu()
     browsehistory = ['ROOT']
@@ -1172,8 +1412,14 @@ document.getElementById('favorites').onclick = ()=>{
     cwdstring = 'ROOT'
     masking='Favorites'
     browsehistory = ['Favorites']
-    document.getElementById(curmenu).style.backgroundColor='white'
-    document.getElementById(curmenu).style.color ='#4A148C'
+    if (lightmode){
+        document.getElementById(curmenu).style.backgroundColor=lightcolors.bgcolor
+        document.getElementById(curmenu).style.color =lightcolors.label
+    }
+    else{
+        document.getElementById(curmenu).style.backgroundColor=darkcolors.bgcolor
+        document.getElementById(curmenu).style.color =darkcolors.label
+    }
     curmenu = 'favorites'
     initmenu()
     cleanUp()
@@ -1191,8 +1437,14 @@ document.getElementById('share').onclick = ()=>{
     document.getElementById('shareno').innerText ='0'
     document.getElementById('shareno').style.visibility='hidden'
     browsehistory = ['Shared with me']
-    document.getElementById(curmenu).style.backgroundColor='white'
-    document.getElementById(curmenu).style.color ='#4A148C'
+    if (lightmode){
+        document.getElementById(curmenu).style.backgroundColor=lightcolors.bgcolor
+        document.getElementById(curmenu).style.color =lightcolors.label
+    }
+    else{
+        document.getElementById(curmenu).style.backgroundColor=darkcolors.bgcolor
+        document.getElementById(curmenu).style.color =darkcolors.label
+    }
     curmenu = 'share'
     initmenu()
     cleanUp()
@@ -1209,8 +1461,14 @@ document.getElementById('bin').onclick = (e)=>{
     cwdstring = 'ROOT'
     masking='Bin'
     browsehistory = ['Bin']
-    document.getElementById(curmenu).style.backgroundColor='white'
-    document.getElementById(curmenu).style.color ='#4A148C'
+    if (lightmode){
+        document.getElementById(curmenu).style.backgroundColor=lightcolors.bgcolor
+        document.getElementById(curmenu).style.color =lightcolors.label
+    }
+    else{
+        document.getElementById(curmenu).style.backgroundColor=darkcolors.bgcolor
+        document.getElementById(curmenu).style.color =darkcolors.label
+    }
     curmenu = e.target.id
     initmenu()
     cleanUp()
@@ -1225,8 +1483,14 @@ document.getElementById('files-shared').onclick = (e)=>{
     cwdstring = 'ROOT'
     masking='Files-Shared'
     browsehistory = ['Files-Shared']
-    document.getElementById(curmenu).style.backgroundColor='white'
-    document.getElementById(curmenu).style.color ='#4A148C'
+    if (lightmode){
+        document.getElementById(curmenu).style.backgroundColor=lightcolors.bgcolor
+        document.getElementById(curmenu).style.color =lightcolors.label
+    }
+    else{
+        document.getElementById(curmenu).style.backgroundColor=darkcolors.bgcolor
+        document.getElementById(curmenu).style.color =darkcolors.label
+    }
     curmenu = e.target.id
     initmenu()
     cleanUp()
@@ -1241,8 +1505,14 @@ document.getElementById('collection').onclick = (e)=>{
     else{
         document.getElementById('collection-list').style.display='block'
         collection=1
-        document.getElementById(curmenu).style.backgroundColor='white'
-        document.getElementById(curmenu).style.color ='#4A148C'
+        if (lightmode){
+            document.getElementById(curmenu).style.backgroundColor=lightcolors.bgcolor
+            document.getElementById(curmenu).style.color =lightcolors.label
+        }
+        else{
+            document.getElementById(curmenu).style.backgroundColor=darkcolors.bgcolor
+            document.getElementById(curmenu).style.color =darkcolors.label
+        }
         curmenu = e.target.id
         initmenu()
     }

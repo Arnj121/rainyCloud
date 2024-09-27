@@ -28,10 +28,9 @@ body{
     width: 100%;
     padding-left: 10px;
 }
-#search:focus{
-    box-shadow: 1px 1px 2px #c0c0bf;
-
-}
+/*#search:focus{*/
+/*    box-shadow: 1px 1px 2px #c0c0bf;*/
+/*}*/
 #search-results{
     position: relative;
     display: flex;
@@ -98,7 +97,7 @@ body{
     height: 200px;
     max-height: 0;
     visibility: hidden;
-    box-shadow: 2px 2px 2px #c0c0bf;
+    /*box-shadow: 2px 2px 2px #c0c0bf;*/
     background-color: whitesmoke;
     display: grid;
     overflow: hidden;
@@ -258,7 +257,7 @@ select:hover{
     top: 100px;
     left: 120px;
     visibility: hidden;
-    box-shadow: 1px 1px 1px #c0c0bf;
+    /*box-shadow: 1px 1px 1px #c0c0bf;*/
     display: flex;
     background-color: white;
     flex-direction: column;
@@ -525,7 +524,7 @@ input[type=text]{
 }
 .contextmenu-items:hover{
     cursor: pointer;
-    background-color: whitesmoke;
+    opacity: 70%;
 }
 
 #share-window{

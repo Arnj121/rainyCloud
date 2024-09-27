@@ -13,9 +13,9 @@
 </head>
 <body>
     <div id="header">
-        <div style="min-width: 220px;text-align: center;padding-top: 10px;color: #4A148C;">
+        <div id="rainyCloudLabel" style="min-width: 220px;text-align: center;padding-top: 10px;color: #4A148C;">
                 <i class="fas fa-cloud fa-2x" style="margin: 0 10px 0 10px"></i>
-            <span style="font-size: xx-large">rainyCloud</span>
+            <span style="font-size: xx-large" >rainyCloud</span>
         </div>
         <div id="search-div">
             <input placeholder="Search drive" type="text" id="search" autocomplete="off">
@@ -30,6 +30,10 @@
             <progress value="0" id="space-progress"/>
         </div>
         <div id="side-options">
+            <div style="display: flex;flex-direction: column;text-align: center;;margin: 25px 10px;">
+                <i id="light-dark-mode"  class="fal fa-moon" style="transform: scale(1.5);color: #c5c5c4;margin-bottom: 5px"></i>
+                <label id="light-dark-mode-label">Light</label>
+            </div>
             <div style="display: flex;flex-direction: column;text-align: center;;margin: 25px 10px;">
                 <i id="show-added-people"  class="fal fa-users" style="transform: scale(1.5);color: #c5c5c4;margin-bottom: 5px"></i>
                 <label>People</label>
@@ -77,7 +81,10 @@
     </div>
     <div id="mainframe">
         <div id="menu">
-            <label id="add-new" class="sidelines"><i class="fal fa-plus" style="color: #fd273a;transform: scale(1.2);margin: 0 10px 0 0"></i><span style="font-weight: bold">New</span></label>
+            <label id="add-new" class="sidelines">
+                <i class="fal fa-plus" style="color: #fd273a;transform: scale(1.2);margin: 0 10px 0 0"></i>
+                <span style="font-weight: bold">New</span>
+            </label>
             <div id="add-new-child">
                 <label id="create-folder"><i class="fal fa-folder-plus" style="margin-right: 10px"></i>New Folder</label>
                 <label id="upload-image"><i class="fal fa-image" style="margin-right: 10px"></i>Media Upload</label>
