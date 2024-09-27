@@ -90,7 +90,7 @@ const loadImage = (req,res)=>{
     let cwdstring = typeof req.query.cwdstring == 'object' ? req.query.cwdstring[0] : req.query.cwdstring
     console.log(cwdstring,'fromloadi')
     let fileName = req.query.filename
-    let dest = `http://${process.env.IP || 'localhost'}:3000/images/${token}/${fileName}`
+    let dest = `http://${process.env.HOST || 'localhost'}:${process.env.IMG_PORT}/images/${token}/${fileName}`
     res.send(dest)
     console.log('success from laod image', dest)
 }
@@ -128,7 +128,7 @@ const listAllFiles=(req,res)=> {
                 c+=1
             }
             else if((result[i]['type'] == 'image' || result[i]['type']=='video' || result[i]['type'] =='audio') && result[i]['bin']==0) {
-                let dest = `http://${process.env.IP || 'localhost'}:3000/images/${token}/${result[i]['name']}`
+                let dest = `http://${process.env.HOST || 'localhost'}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`
                 responseJson[c] = {
                 'type': result[i]['type'], 'src': dest, 'name': result[i]['name'], 'mimetype': result[i]['mimetype'],
                     'size': result[i]['size'], 'lastmod': result[i]['lastmod'],'owner':token, 'cwd':result[i]['cwd']
@@ -235,7 +235,7 @@ const search = function(req,res){
                 if (result[i]['type'] == 'image' && (searchtype == 'all' || searchtype == 'images')) {
                     responseJson[ids] = {
                         'name': [j],
-                        'path': `http://${process.env.IP || 'localhost'}:300/images/${token}/${result[i]['name']}`, 'type': 'image', 'pathtoshow': `from ${result[i]['token']}`,
+                        'path': `http://${process.env.HOST || 'localhost'}:300/images/${token}/${result[i]['name']}`, 'type': 'image', 'pathtoshow': `from ${result[i]['token']}`,
                     }
                 } else if (result[i]['type'] == 'file' && (searchtype == 'docs' || searchtype == 'all')) {
                     responseJson[ids] = {
@@ -246,13 +246,13 @@ const search = function(req,res){
                 else if (result[i]['type'] == 'video' && (searchtype == 'video' || searchtype == 'all')) {
                     responseJson[ids] = {
                         'name': [j],
-                        'path': `http://${process.env.IP || 'localhost'}:300/images/${token}/${result[i]['name']}`, 'type': 'video', 'pathtoshow': `from ${result[i]['token']}`,
+                        'path': `http://${process.env.HOST || 'localhost'}:300/images/${token}/${result[i]['name']}`, 'type': 'video', 'pathtoshow': `from ${result[i]['token']}`,
                     }
                 }
                 else if (result[i]['type'] == 'audio' && (searchtype == 'audio' || searchtype == 'all')) {
                     responseJson[ids] = {
                         'name': [j],
-                        'path': `http://${process.env.IP || 'localhost'}:300/images/${token}/${result[i]['name']}`, 'type': 'audio', 'pathtoshow': `from ${result[i]['token']}`,
+                        'path': `http://${process.env.HOST || 'localhost'}:300/images/${token}/${result[i]['name']}`, 'type': 'audio', 'pathtoshow': `from ${result[i]['token']}`,
                     }
                 }
                 ids += 1
@@ -269,7 +269,7 @@ const search = function(req,res){
                     if(result[i]['type'] == 'image' && (searchtype=='all' || searchtype=='images')){
                         responseJson[ids] = {
                             'name': result[i]['name'],
-                            'path': `http://${process.env.IP || 'localhost'}:300/images/${token}/${result[i]['name']}`, 'type': 'image', 'pathtoshow': `from ${y}`,
+                            'path': `http://${process.env.HOST || 'localhost'}:300/images/${token}/${result[i]['name']}`, 'type': 'image', 'pathtoshow': `from ${y}`,
                         }
                     }
                     else if(result[i]['type'] =='file' && (searchtype=='docs' || searchtype=='all')){
@@ -281,13 +281,13 @@ const search = function(req,res){
                     else if (result[i]['type'] == 'video' && (searchtype == 'video' || searchtype == 'all')) {
                         responseJson[ids] = {
                             'name': result[i]['name'],
-                            'path': `http://${process.env.IP || 'localhost'}:300/images/${token}/${result[i]['name']}`, 'type': 'video', 'pathtoshow': `from ${y}`,
+                            'path': `http://${process.env.HOST || 'localhost'}:300/images/${token}/${result[i]['name']}`, 'type': 'video', 'pathtoshow': `from ${y}`,
                         }
                     }
                     else if (result[i]['type'] == 'audio' && (searchtype == 'audio' || searchtype == 'all')) {
                         responseJson[ids] = {
                             'name': result[i]['name'],
-                            'path': `http://${process.env.IP || 'localhost'}:300/images/${token}/${result[i]['name']}`, 'type': 'audio', 'pathtoshow': `from ${y}`,
+                            'path': `http://${process.env.HOST || 'localhost'}:300/images/${token}/${result[i]['name']}`, 'type': 'audio', 'pathtoshow': `from ${y}`,
                         }
                     }
                     ids+=1
@@ -303,7 +303,7 @@ const search = function(req,res){
                     if (result[i]['type'] == 'image' && (searchtype == 'all' || searchtype == 'images')) {
                         responseJson[ids] = {
                             'name': result[i]['name'],
-                            'path': `http://${process.env.IP || 'localhost'}:300/images/${token}/${result[i]['name']}`, 'type': 'image', 'pathtoshow': 'shared with me'
+                            'path': `http://${process.env.HOST || 'localhost'}:300/images/${token}/${result[i]['name']}`, 'type': 'image', 'pathtoshow': 'shared with me'
                         }
                     } else if (result[j]['type'] == 'file' && (searchtype == 'docs' || searchtype == 'all')) {
                         responseJson[ids] = {
@@ -314,13 +314,13 @@ const search = function(req,res){
                     else if (result[i]['type'] == 'video' && (searchtype == 'video' || searchtype == 'all')) {
                         responseJson[ids] = {
                             'name': result[i]['name'],
-                            'path': `http://${process.env.IP || 'localhost'}:300/images/${token}/${result[i]['name']}`, 'type': 'video', 'pathtoshow': 'shared with me'
+                            'path': `http://${process.env.HOST || 'localhost'}:300/images/${token}/${result[i]['name']}`, 'type': 'video', 'pathtoshow': 'shared with me'
                         }
                     }
                     else if (result[i]['type'] == 'audio' && (searchtype == 'audio' || searchtype == 'all')) {
                         responseJson[ids] = {
                             'name': result[i]['name'],
-                            'path': `http://${process.env.IP || 'localhost'}:300/images/${token}/${result[i]['name']}`, 'type': 'audio', 'pathtoshow': 'shared with me'
+                            'path': `http://${process.env.HOST || 'localhost'}:300/images/${token}/${result[i]['name']}`, 'type': 'audio', 'pathtoshow': 'shared with me'
                         }
                     }
                     ids++;
@@ -337,7 +337,7 @@ const search = function(req,res){
                     if (result[i]['type'] == 'image' && (searchtype == 'all' || searchtype == 'images')) {
                         responseJson[ids] = {
                             'name': result[i]['name'],
-                            'path': `http://${process.env.IP || 'localhost'}:3000/images/${token}/${result[i]['name']}`, 'type': 'image', 'pathtoshow': s
+                            'path': `http://${process.env.HOST || 'localhost'}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`, 'type': 'image', 'pathtoshow': s
                         }
                     }
                     if (result[i]['type'] == 'file' && (searchtype == 'docs' || searchtype == 'all')) {
@@ -354,13 +354,13 @@ const search = function(req,res){
                     if (result[i]['type'] == 'video' && (searchtype == 'video' || searchtype == 'all')) {
                         responseJson[ids] = {
                             'name': result[i]['name'],
-                            'path': `http://${process.env.IP || 'localhost'}:3000/images/${token}/${result[i]['name']}`, 'type': 'video', 'pathtoshow': s
+                            'path': `http://${process.env.HOST || 'localhost'}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`, 'type': 'video', 'pathtoshow': s
                         }
                     }
                     if (result[i]['type'] == 'audio' && (searchtype == 'audio' || searchtype == 'all')) {
                         responseJson[ids] = {
                             'name': result[i]['name'],
-                            'path': `http://${process.env.IP || 'localhost'}:3000/images/${token}/${result[i]['name']}`, 'type': 'audio', 'pathtoshow': s
+                            'path': `http://${process.env.HOST || 'localhost'}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`, 'type': 'audio', 'pathtoshow': s
                         }
                     }
                     ids++
@@ -408,7 +408,7 @@ const getfav = (req,res)=> {
             else if ((result[i]['type'] == 'image' || result[i]['type']=='video'|| result[i]['type']=='audio') && result[i]['bin'] == 0)
                 responseJson[c] = {
                     'type': result[i]['type'],
-                    'src': `http://${process.env.IP || 'localhost'}:3000/images/${token}/${result[i]['name']}`,
+                    'src': `http://${process.env.HOST || 'localhost'}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`,
                     'name': result[i]['name'],
                     'mimetype': result[i]['mimetype'],
                     'size': result[i]['size'],
@@ -479,7 +479,7 @@ const listcollection = (req,res)=>{
                 else if (result[i]['type'] == 'image' || result[i]['type']=='video' || result[i]['type']=='audio')
                     responseJson[c] = {
                         'type': result[i]['type'],
-                        'src': `http://${process.env.IP || 'localhost'}:3000/images/${token}/${result[i]['name']}`,
+                        'src': `http://${process.env.HOST || 'localhost'}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`,
                         'name':result[i]['name'],
                         'mimetype':result[i]['mimetype'],
                         'size':result[i]['size'],
@@ -517,7 +517,7 @@ const listBinFiles = (req,res)=>{
                     'cwd': result[i]['cwd']
                 }
             } else if (result[i]['type'] == 'image' || result[i]['type']=='video' || result[i]['type']=='audio') {
-                let dest = `http://${process.env.IP || 'localhost'}:3000/images/${token}/${result[i]['name']}`
+                let dest = `http://${process.env.HOST || 'localhost'}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`
                 responseJson[c] = {
                     'type': result[i]['type'],
                     'src': dest,
@@ -622,7 +622,7 @@ const reloadwithfilter= (req,res)=>{
                 c+=1
             }
             else if(result[i]['type'] == 'image' && filterlist.includes('image-filter')) {
-                let dest = `http://${process.env.IP || 'localhost'}:3000/images/${token}/${result[i]['name']}`
+                let dest = `http://${process.env.HOST || 'localhost'}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`
                 responseJson[c] = {
                     'type': 'image', 'src': dest, 'name': result[i]['name'], 'mimetype': result[i]['mimetype'],
                     'size': result[i]['size'], 'lastmod': result[i]['lastmod'],'owner':token
@@ -634,7 +634,7 @@ const reloadwithfilter= (req,res)=>{
                 c += 1
             }
             else if(result[i]['type'] == 'video' && filterlist.includes('video-filter')) {
-                let dest = `http://${process.env.IP || 'localhost'}:3000/images/${token}/${result[i]['name']}`
+                let dest = `http://${process.env.HOST || 'localhost'}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`
                 responseJson[c] = {
                     'type': 'video', 'src': dest, 'name': result[i]['name'], 'mimetype': result[i]['mimetype'],
                     'size': result[i]['size'], 'lastmod': result[i]['lastmod'],'owner':token
@@ -642,7 +642,7 @@ const reloadwithfilter= (req,res)=>{
                 c += 1
             }
             else if(result[i]['type'] == 'audio' && filterlist.includes('audio-filter')) {
-                let dest = `http://${process.env.IP || 'localhost'}:3000/images/${token}/${result[i]['name']}`
+                let dest = `http://${process.env.HOST || 'localhost'}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`
                 responseJson[c] = {
                     'type': 'audio', 'src': dest, 'name': result[i]['name'], 'mimetype': result[i]['mimetype'],
                     'size': result[i]['size'], 'lastmod': result[i]['lastmod'],'owner':token
@@ -780,7 +780,7 @@ const getfilesshared = (req,res)=>{
     db.getDb().collection('userfiles').find({'token':token,'shared':1}).toArray((err,result)=>{
         for(let i=0;i<result.length;i++){
             if (result[i]['type'] == 'image' || result[i]['type'] =='video' || result[i]['type'] =='audio'){
-                let dest = `http://${process.env.IP || 'localhost'}:3000/images/${token}/${result[i]['name']}`
+                let dest = `http://${process.env.HOST || 'localhost'}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`
                 responseJson[c] = {
                     'type': result[i]['type'], 'src': dest, 'name': result[i]['name'],'mimetype': result[i]['mimetype'],
                     'size': result[i]['size'], 'lastmod': result[i]['lastmod'],'owner':token,'cwd':result[i]['cwd']

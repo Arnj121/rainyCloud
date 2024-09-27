@@ -63,9 +63,9 @@ function getnewshares(t=0) {
             }
         }
     }
-    let url = `http://localhost:4000/getsharefile?token=${userdetails['token']}&only=only`
+    let url = `http://10.107.115.212:4000/getsharefile?token=${userdetails['token']}&only=only`
     if(t==1)
-        url = `http://localhost:4000/getsharefile?token=${userdetails['token']}&only=notonly`
+        url = `http://10.107.115.212:4000/getsharefile?token=${userdetails['token']}&only=notonly`
     xhr.onerror = function (){
         if (cookieExist('getsharefile')) {
             let c = parseInt(getCookie('getsharefile'))
@@ -105,7 +105,7 @@ function initspace(){
             displayspace()
         }
     }
-    xhr.open('GET',`http://localhost:4000/getspace?email=${userdetails['email']}`)
+    xhr.open('GET',`http://10.107.115.212:4000/getspace?email=${userdetails['email']}`)
     xhr.send()
 }
 
@@ -320,7 +320,7 @@ document.getElementById('space-info').onclick = ()=>{
             temp(JSON.parse(getCookie('sapceanalysis')))
         }
     }
-    xhr.open('GET',`http://localhost:4000/spaceanalysis?token=${userdetails['token']}`)
+    xhr.open('GET',`http://10.107.115.212:4000/spaceanalysis?token=${userdetails['token']}`)
     xhr.send()
 }
 document.getElementById('close-space-window').onclick = ()=>{
@@ -536,7 +536,7 @@ document.getElementById('show-added-people').onclick = ()=>{
     xhr.onerror = function (){
         displaypopup('No network connection:(')
     }
-    xhr.open('GET',`http://localhost:4000/getpeople?token=${userdetails['token']}`)
+    xhr.open('GET',`http://10.107.115.212:4000/getpeople?token=${userdetails['token']}`)
     xhr.send()
 }
 document.getElementById('add-more').onclick = ()=>{
@@ -564,7 +564,7 @@ document.getElementById('remove-more').onclick = ()=>{
         xhr.onerror = function (){
             displaypopup('No network connection:(')
         }
-        xhr.open('DELETE',`http://localhost:4000/removepeople?token=${userdetails['token']}&email=${email}`)
+        xhr.open('DELETE',`http://10.107.115.212:4000/removepeople?token=${userdetails['token']}&email=${email}`)
         xhr.send()
     }
 }
@@ -605,7 +605,7 @@ document.getElementById('search').oninput = (e)=>{
         xhr.onerror = function (){
             displaypopup('No network connection:(')
         }
-        xhr.open('GET',`http://localhost:4000/search?search=${val}&token=${userdetails['token']}&searchloc=${searchparam['searchloc']}&owner=${searchparam['owner']}&email=${searchparam['email']}&searchType=${searchparam['search-type']}`)
+        xhr.open('GET',`http://10.107.115.212:4000/search?search=${val}&token=${userdetails['token']}&searchloc=${searchparam['searchloc']}&owner=${searchparam['owner']}&email=${searchparam['email']}&searchType=${searchparam['search-type']}`)
         xhr.send()
     }
     else{
@@ -798,15 +798,15 @@ function RelaodWithFilter() {
                     showTrashIcon()
             }
         }
-        let url = `http://localhost:4000/reloadwithfilter?filterlist=${filterlist}&cwdstring=${cwdstring}&token=${userdetails['token']}`
+        let url = `http://10.107.115.212:4000/reloadwithfilter?filterlist=${filterlist}&cwdstring=${cwdstring}&token=${userdetails['token']}`
         if(masking=='Bin')
-            url = `http://localhost:4000/reloadwithfilter?filterlist=${filterlist}&cwdstring=${cwdstring}&token=${userdetails['token']}&bin=1`
+            url = `http://10.107.115.212:4000/reloadwithfilter?filterlist=${filterlist}&cwdstring=${cwdstring}&token=${userdetails['token']}&bin=1`
         else if(masking =='Favorites')
-            url = `http://localhost:4000/reloadwithfilter?filterlist=${filterlist}&cwdstring=${cwdstring}&token=${userdetails['token']}&fav=1`
+            url = `http://10.107.115.212:4000/reloadwithfilter?filterlist=${filterlist}&cwdstring=${cwdstring}&token=${userdetails['token']}&fav=1`
         else if(masking == 'shared with me')
-            url = `http://localhost:4000/reloadwithfilter?filterlist=${filterlist}&cwdstring=${cwdstring}&token=${userdetails['token']}&swm=1`
+            url = `http://10.107.115.212:4000/reloadwithfilter?filterlist=${filterlist}&cwdstring=${cwdstring}&token=${userdetails['token']}&swm=1`
         else if(masking == 'files-shared')
-            url = `http://localhost:4000/reloadwithfilter?filterlist=${filterlist}&cwdstring=${cwdstring}&token=${userdetails['token']}&fs=1`
+            url = `http://10.107.115.212:4000/reloadwithfilter?filterlist=${filterlist}&cwdstring=${cwdstring}&token=${userdetails['token']}&fs=1`
         xhr.open('GET',url)
         xhr.send()
     } else {
@@ -885,11 +885,11 @@ document.getElementById('delete-all').onclick = ()=> {
             let xhr = new XMLHttpRequest()
             let url;
             if (rndids[selectedfilelist[i]]['type'] == 'file')
-                url = `http://localhost:4000/deletefile?filename=${rndids[selectedfilelist[i]]['name']}&token=${info[selectedfilelist[i]]['owner']}&cwdstring=${cwdstring}`
+                url = `http://10.107.115.212:4000/deletefile?filename=${rndids[selectedfilelist[i]]['name']}&token=${info[selectedfilelist[i]]['owner']}&cwdstring=${cwdstring}`
             else if (rndids[selectedfilelist[i]]['type'] == 'image')
-                url = `http://localhost:4000/deleteimage?filename=${rndids[selectedfilelist[i]]['name']}&token=${info[selectedfilelist[i]]['owner']}&cwdstring=${cwdstring}`
+                url = `http://10.107.115.212:4000/deleteimage?filename=${rndids[selectedfilelist[i]]['name']}&token=${info[selectedfilelist[i]]['owner']}&cwdstring=${cwdstring}`
             else
-                url = `http://localhost:4000/deletefolder?filename=${rndids[selectedfilelist[i]]['name']}&token=${userdetails['token']}&cwd=${cwd}&cwdstring=${cwdstring}`
+                url = `http://10.107.115.212:4000/deletefolder?filename=${rndids[selectedfilelist[i]]['name']}&token=${userdetails['token']}&cwd=${cwd}&cwdstring=${cwdstring}`
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4) {
                     //remove the element from dom
@@ -1057,7 +1057,7 @@ document.getElementById('username-ok').onclick = ()=>{
         xhr.onerror = function (){
             displaypopup('No network connection:(')
         }
-        xhr.open("PUT",`http://localhost:4000/edituser?type=name`)
+        xhr.open("PUT",`http://10.107.115.212:4000/edituser?type=name`)
         xhr.setRequestHeader('Content-Type','application/json;charset=UTF-8')
         xhr.send(JSON.stringify({'val':newusername,'email':userdetails['email']}))
     }
@@ -1083,7 +1083,7 @@ document.getElementById('password-ok').onclick = ()=>{
         xhr.onerror = function (){
             displaypopup('No network connection:(')
         }
-        xhr.open("PUT",`http://localhost:4000/edituser?type=password`)
+        xhr.open("PUT",`http://10.107.115.212:4000/edituser?type=password`)
         xhr.setRequestHeader('Content-Type','application/json;charset=UTF-8')
         xhr.send(JSON.stringify({'val':newpassword,'email':userdetails['email']}))
     }
@@ -1147,7 +1147,7 @@ function displaySearchResults(){
                 xhr.onerror = function (){
                     displaypopup('No network connection:(')
                 }
-                xhr.open('GET',`http://localhost:4000/loadfile?filename=${searchredirest[e.target.id]['name']}&token=${searchredirest[e.target.id]['path']}&cwdstring=${e.target.id}`)
+                xhr.open('GET',`http://10.107.115.212:4000/loadfile?filename=${searchredirest[e.target.id]['name']}&token=${searchredirest[e.target.id]['path']}&cwdstring=${e.target.id}`)
                 xhr.send()
             }
             else if(searchredirest[e.target.id]['type'] == 'image'){
@@ -1188,7 +1188,7 @@ function initCollections() {
                         document.getElementById('usercollec').removeChild(document.getElementById(e.target.id.slice(0, -2)+'p'))
                     }
                 }
-                xhr.open('POST',`http://localhost:4000/removecol`)
+                xhr.open('POST',`http://10.107.115.212:4000/removecol`)
                 xhr.setRequestHeader('Content-Type','application/json;charset=UTF-8')
                 xhr.send(JSON.stringify({'name':e.target.id.slice(0,-2),'token':userdetails['token']}))
             }
@@ -1230,7 +1230,7 @@ function initCollections() {
             else
                 displaypopup('No network connection:(')
         }
-        xhr.open('GET', `http://localhost:4000/getcollection?token=${userdetails['token']}`)
+        xhr.open('GET', `http://10.107.115.212:4000/getcollection?token=${userdetails['token']}`)
         xhr.send()
     }
 }
@@ -1247,7 +1247,7 @@ function inituserdetails() {
         if(key=='password') userdetails['password'] = v[1]
     }
     if(userdetails['token'] ==0 || userdetails['name']==0){
-        location.replace('http://localhost:4000/loginpage')
+        location.replace('http://10.107.115.212:4000/loginpage')
     }
     document.getElementById('username').innerText=userdetails['name']
     initspace()
@@ -1266,7 +1266,7 @@ function logout() {
     document.cookie = `token=;expires=${d};path=/`
     document.cookie = `email=;expires=${d};path=/`
     document.cookie = `password=;expires=${d};path=/`
-    location.replace('http://localhost:4000/loginpage')
+    location.replace('http://10.107.115.212:4000/loginpage')
     let xhr= new XMLHttpRequest()
     // xhr.onreadystatechange = function() {
     //     if (xhr.readyState == 4) {
@@ -1281,10 +1281,10 @@ function logout() {
     //         document.cookie = `token=;expires=${d};path=/mydrive`
     //         document.cookie = `email=;expires=${d};path=/mydrive`
     //         document.cookie = `password=;expires=${d};path=/mydrive`
-    //         location.replace('http://localhost:4000/loginpage')
+    //         location.replace('http://10.107.115.212:4000/loginpage')
     //     }
     // }
-    xhr.open('GET',`http://localhost:4000/logout?token=${userdetails['token']}`)
+    xhr.open('GET',`http://10.107.115.212:4000/logout?token=${userdetails['token']}`)
     xhr.send()
 }
 document.getElementById('add-people').onclick=()=>{
@@ -1349,7 +1349,7 @@ document.getElementById('add-people-confirm').onclick = ()=>{
     xhr.onerror = function(){
         displaypopup('No Network Connection!:(')
     }
-    xhr.open('POST',`http://localhost:4000/addpeople?token=${userdetails['token']}`)
+    xhr.open('POST',`http://10.107.115.212:4000/addpeople?token=${userdetails['token']}`)
     xhr.setRequestHeader('Content-Type','application/json;charset=UTF-8')
     xhr.send(JSON.stringify({'0':email}))
 
@@ -1551,7 +1551,7 @@ document.getElementById('create-collection-confirm').onclick = () =>{
                         document.getElementById('usercollec').removeChild(document.getElementById(e.target.id.slice(0, -2)+'p'))
                     }
                 }
-                xhr.open('POST',`http://localhost:4000/removecol`)
+                xhr.open('POST',`http://10.107.115.212:4000/removecol`)
                 xhr.setRequestHeader('Content-Type','application/json;charset=UTF-8')
                 xhr.send(JSON.stringify({'name':e.target.id.slice(0,-2),'token':userdetails['token']}))
             }
@@ -1578,7 +1578,7 @@ document.getElementById('create-collection-confirm').onclick = () =>{
     xhr.onerror = function (){
         displaypopup('No Network Connection!:(')
     }
-    xhr.open('POST',`http://localhost:4000/createcollection?name=${name}&token=${userdetails['token']}`)
+    xhr.open('POST',`http://10.107.115.212:4000/createcollection?name=${name}&token=${userdetails['token']}`)
     xhr.send()
 }
 document.getElementById('create-collection-cancel').onclick = ()=>{
@@ -1687,7 +1687,7 @@ document.getElementById('file-upload-confirm').onclick = ()=>{
     for(let i=0;i<filesSelectedkeys.length;i++){
         let formdata = new FormData()
         formdata.append('files',filesSelected[filesSelectedkeys[i]])
-        fetch(`http://localhost:4000/uploadfile?token=${userdetails['token']}&cwd=${cwd}&lastmod=${filesSelected[filesSelectedkeys[i]].lastModifiedDate.toString().slice(0,24)}&cwdstring=${cwdstring}`,{method:'POST',body:formdata})
+        fetch(`http://10.107.115.212:4000/uploadfile?token=${userdetails['token']}&cwd=${cwd}&lastmod=${filesSelected[filesSelectedkeys[i]].lastModifiedDate.toString().slice(0,24)}&cwdstring=${cwdstring}`,{method:'POST',body:formdata})
             .then(res=>{console.log(res)})
     }
     for(let i=0;i<filesSelectedkeys.length;i++){
@@ -1745,7 +1745,7 @@ document.getElementById('image-upload-confirm').onclick = ()=>{
     for(let i=0;i<imagesSelectedkeys.length;i++){
         let formdata = new FormData()
         formdata.append('files',imagesSelected[imagesSelectedkeys[i]])
-        fetch(`http://localhost:4000/uploadimage?token=${userdetails['token']}&cwdstring=${cwdstring}&lastmod=${imagesSelected[imagesSelectedkeys[i]].lastModifiedDate.toString().slice(0,24)}&cwdstring=${cwdstring}`,{method:'POST',body:formdata})
+        fetch(`http://10.107.115.212:4000/uploadimage?token=${userdetails['token']}&cwdstring=${cwdstring}&lastmod=${imagesSelected[imagesSelectedkeys[i]].lastModifiedDate.toString().slice(0,24)}&cwdstring=${cwdstring}`,{method:'POST',body:formdata})
            .then(res=>console.log(res))
     }
     let filename;
@@ -1817,7 +1817,7 @@ document.getElementById('image-upload-confirm').onclick = ()=>{
             xhr.onerror = function (){
                 displaypopup('No network connection:(')
             }
-            xhr.open('GET',`http://localhost:4000/loadimage?filename=${filename}&token=${userdetails['token']}&cwdstring=${cwdstring}`)
+            xhr.open('GET',`http://10.107.115.212:4000/loadimage?filename=${filename}&token=${userdetails['token']}&cwdstring=${cwdstring}`)
             xhr.send()
         }
         setTimeout(()=>{
@@ -1875,7 +1875,7 @@ function createFolder(){
     xhr.onerror = function (){
         displaypopup('No network connection:(')
     }
-    xhr.open('POST',`http://localhost:4000/createfolder?name=${name}&token=${userdetails['token']}&cwd=${cwd}&cwdstring=${cwdstring}`)
+    xhr.open('POST',`http://10.107.115.212:4000/createfolder?name=${name}&token=${userdetails['token']}&cwd=${cwd}&cwdstring=${cwdstring}`)
     xhr.send()
 
 }
@@ -1915,7 +1915,7 @@ document.getElementById('save-file').onclick = ()=>{
     xhr.onerror = function (){
         displaypopup('No network connection:(')
     }
-    xhr.open('POST',`http://localhost:4000/createfile?token=${userdetails['token']}&data=${data}&name=${name}&lastmod=${lastmod}&cwdstring=${cwdstring}&size=${data.length}`)
+    xhr.open('POST',`http://10.107.115.212:4000/createfile?token=${userdetails['token']}&data=${data}&name=${name}&lastmod=${lastmod}&cwdstring=${cwdstring}&size=${data.length}`)
     xhr.setRequestHeader('Content-Type','application/json;charset=UTF-8')
     xhr.send(JSON.stringify({'token':userdetails['token'],'data':data,'name':name,'lastmod':lastmod,'cwdstring':cwdstring,'size':data.length}))
 }
@@ -1933,11 +1933,11 @@ document.getElementById('delete').onclick=()=>{
     let xhr = new XMLHttpRequest()
     let url;console.log(rndids[currentselected]['type'])
     if(rndids[currentselected]['type'] == 'file')
-        url = `http://localhost:4000/deletefile?filename=${rndids[currentselected]['name']}&token=${info[currentselected]['owner']}&cwdstring=${cwdstring}`
+        url = `http://10.107.115.212:4000/deletefile?filename=${rndids[currentselected]['name']}&token=${info[currentselected]['owner']}&cwdstring=${cwdstring}`
     else if(rndids[currentselected]['type'] == 'image' || rndids[currentselected]['type'] == 'video' || rndids[currentselected]['type'] == 'audio')
-        url = `http://localhost:4000/deleteimage?filename=${rndids[currentselected]['name']}&token=${info[currentselected]['owner']}&cwdstring=${cwdstring}`
+        url = `http://10.107.115.212:4000/deleteimage?filename=${rndids[currentselected]['name']}&token=${info[currentselected]['owner']}&cwdstring=${cwdstring}`
     else
-        url = `http://localhost:4000/deletefolder?filename=${rndids[currentselected]['name']}&token=${userdetails['token']}&cwd=${cwd}&cwdstring=${cwdstring}`
+        url = `http://10.107.115.212:4000/deletefolder?filename=${rndids[currentselected]['name']}&token=${userdetails['token']}&cwd=${cwd}&cwdstring=${cwdstring}`
     xhr.onreadystatechange = function(){
         if(xhr.readyState === 4){
             //remove the element from dom
@@ -1974,11 +1974,11 @@ document.getElementById('rename').onclick = ()=>{
 document.getElementById('rename-confirm').onclick = ()=>{
     let newfilename = document.getElementById('newfilename').value
     let xhr = new XMLHttpRequest()
-    let url = `http://localhost:4000/updatefilename?oldname=${rndids[currentselected]['name']}&newname=${newfilename}&token=${userdetails['token']}&cwdstring=${cwdstring}`
+    let url = `http://10.107.115.212:4000/updatefilename?oldname=${rndids[currentselected]['name']}&newname=${newfilename}&token=${userdetails['token']}&cwdstring=${cwdstring}`
     if(rndids[currentselected]['type'] == 'image')
-        url = `http://localhost:4000/updateimagename?oldname=${rndids[currentselected]['name']}&newname=${newfilename}&token=${userdetails['token']}&cwdstring=${cwdstring}`
+        url = `http://10.107.115.212:4000/updateimagename?oldname=${rndids[currentselected]['name']}&newname=${newfilename}&token=${userdetails['token']}&cwdstring=${cwdstring}`
     else if(rndids[currentselected]['type'] == 'dir')
-        url = `http://localhost:4000/updatefoldername?oldname=${rndids[currentselected]['name']}&newname=${newfilename}&token=${userdetails['token']}&cwdstring=${cwdstring}`
+        url = `http://10.107.115.212:4000/updatefoldername?oldname=${rndids[currentselected]['name']}&newname=${newfilename}&token=${userdetails['token']}&cwdstring=${cwdstring}`
     xhr.onreadystatechange = function(){
         if(xhr.readyState === 4){
             displaypopup(`file '${rndids[currentselected]['name']}' renamed`)
@@ -2007,7 +2007,7 @@ document.getElementById('rename-cancel').onclick = ()=>{
 
 document.getElementById('download').onclick = ()=>{
     let file=rndids[currentselected]['name']
-    window.location.assign(`http://localhost:4000/download?name=${file}&token=${userdetails['token']}&type=${info[currentselected]['type']}`)
+    window.location.assign(`http://10.107.115.212:4000/download?name=${file}&token=${userdetails['token']}&type=${info[currentselected]['type']}`)
     document.getElementById(currentselected).click()
     currentselected=0
 }
@@ -2084,7 +2084,7 @@ document.getElementById('fav').onclick = ()=>{
     xhr.onerror = function (){
         displaypopup('No network connection:(')
     }
-    xhr.open('POST',`http://localhost:4000/addfav?token=${userdetails['token']}&cwdstring=${cwdstring}&filename=${filename}&type=${type}`)
+    xhr.open('POST',`http://10.107.115.212:4000/addfav?token=${userdetails['token']}&cwdstring=${cwdstring}&filename=${filename}&type=${type}`)
     xhr.send()
 }
 
@@ -2141,7 +2141,7 @@ document.getElementById('add-confirm').onclick = ()=>{
     xhr.onerror = function (){
         displaypopup('No network connection:(')
     }
-    xhr.open('POST',`http://localhost:4000/addtocollection?cname=${cname}&type=${type}&name=${name}&token=${userdetails['token']}&cwdstring=${cwdstring}`)
+    xhr.open('POST',`http://10.107.115.212:4000/addtocollection?cname=${cname}&type=${type}&name=${name}&token=${userdetails['token']}&cwdstring=${cwdstring}`)
     xhr.send()
 }
 document.getElementById('cancel-confirm').onclick = ()=>{
@@ -2172,7 +2172,7 @@ document.getElementById('sharethis').onclick = ()=>{
     xhr.onerror = function (){
         displaypopup('No network connection:(')
     }
-    xhr.open('GET',`http://localhost:4000/getpeople?token=${userdetails['token']}`)
+    xhr.open('GET',`http://10.107.115.212:4000/getpeople?token=${userdetails['token']}`)
     xhr.send()
 
 }
@@ -2219,7 +2219,7 @@ function shareFile(){
     xhr.onerror = function (){
         displaypopup('No network connection:(')
     }
-    xhr.open('POST',`http://localhost:4000/sharefile?select=${select}&email=${email}&token=${userdetails['token']}&cwdstring=${cwdstring}`)
+    xhr.open('POST',`http://10.107.115.212:4000/sharefile?select=${select}&email=${email}&token=${userdetails['token']}&cwdstring=${cwdstring}`)
     xhr.setRequestHeader('Content-Type','application/json;charset=UTF-8')
     xhr.send(JSON.stringify(info[currentselected]))
 }
@@ -2265,7 +2265,7 @@ document.getElementById('paste').onclick = ()=>{
         xhr.onerror = function (){
             displaypopup('No network connection:(')
         }
-        xhr.open('POST', `http://localhost:4000/transfer?oldcwdstring=${oldcwdstring}&newcwdstring=${newcwdstring}&token=${userdetails['token']}&status=${status}&type=${type}&filename=${filename}`)
+        xhr.open('POST', `http://10.107.115.212:4000/transfer?oldcwdstring=${oldcwdstring}&newcwdstring=${newcwdstring}&token=${userdetails['token']}&status=${status}&type=${type}&filename=${filename}`)
         xhr.send()
     }
 
@@ -2405,7 +2405,7 @@ document.getElementById('edit-file').onclick =()=>{
         xhr.onerror = function (){
             displaypopup('No network connection:(')
         }
-        xhr.open('POST',`http://localhost:4000/savefile?token=${userdetails['token']}`)
+        xhr.open('POST',`http://10.107.115.212:4000/savefile?token=${userdetails['token']}`)
         xhr.setRequestHeader('Content-Type','application/json;charset=UTF-8')
         xhr.send(JSON.stringify({'val':value,'filename':info[filedblclicked]['name'],'owner':info[filedblclicked]['owner']}))
 
@@ -2563,7 +2563,7 @@ function eventListeners(all=1,work=0) {
                 let filename = rndids[e.target.id]['name']
                 if (rndids[e.target.id]['type'] == 'file') {
                     filedblclicked = e.target.id
-                    let url = `http://localhost:4000/loadfile?filename=${filename}&token=${info[e.target.id]['owner']}&cwdstring=${cwdstring}`
+                    let url = `http://10.107.115.212:4000/loadfile?filename=${filename}&token=${info[e.target.id]['owner']}&cwdstring=${cwdstring}`
                     let xhr = new XMLHttpRequest()
                     let data = ''
                     xhr.onreadystatechange = function () {
@@ -2900,7 +2900,7 @@ function getFavfiles(){
         showNav()
         displaypopup('No network connection:(')
     }
-    xhr.open('GET', `http://localhost:4000/getfav?token=${userdetails['token']}`)
+    xhr.open('GET', `http://10.107.115.212:4000/getfav?token=${userdetails['token']}`)
     xhr.send()
 }
 
@@ -2923,7 +2923,7 @@ function getsharefiles() {
         showNav()
         displaypopup('No network connection:(')
     }
-    xhr.open('GET',`http://localhost:4000/getsharefile?token=${userdetails['token']}&only=all`)
+    xhr.open('GET',`http://10.107.115.212:4000/getsharefile?token=${userdetails['token']}&only=all`)
     xhr.send()
 }
 function getCollecFiles() {
@@ -2946,7 +2946,7 @@ function getCollecFiles() {
         showNav()
         displaypopup('No network connection:(')
     }
-    xhr.open('GET',`http://localhost:4000/listcollection?token=${userdetails['token']}&cname=${curcolname}`)
+    xhr.open('GET',`http://10.107.115.212:4000/listcollection?token=${userdetails['token']}&cname=${curcolname}`)
     xhr.send()
 }
 
@@ -2970,7 +2970,7 @@ function getfilesshared() {
         showNav()
         displaypopup('No network connection:(')
     }
-    xhr.open('GET',`http://localhost:4000/getfilesshared?token=${userdetails['token']}`)
+    xhr.open('GET',`http://10.107.115.212:4000/getfilesshared?token=${userdetails['token']}`)
     xhr.send()
 }
 
@@ -2994,7 +2994,7 @@ function getBinFiles() {
         showTrashIcon()
         displaypopup('No network connection:(')
     }
-    xhr.open('GET',`http://localhost:4000/listbinfiles?token=${userdetails['token']}&bin=1`)
+    xhr.open('GET',`http://10.107.115.212:4000/listbinfiles?token=${userdetails['token']}&bin=1`)
     xhr.send()
 }
 function showTrashIcon() {
@@ -3042,7 +3042,7 @@ function showTrashIcon() {
             xhr.onerror = function (){
                 displaypopup('No network connection:(')
             }
-            xhr.open('POST',`http://localhost:4000/restorefile?token=${userdetails['token']}`)
+            xhr.open('POST',`http://10.107.115.212:4000/restorefile?token=${userdetails['token']}`)
             xhr.setRequestHeader('Content-Type','application/json;charset=UTF-8')
             xhr.send(JSON.stringify({'filename':filename,'cwdstring':info[trashids[e.target.id]]['cwd']}))
         }
@@ -3085,7 +3085,7 @@ function showStopSharingicon() {
             xhr.onerror = function (){
                 displaypopup('No network connection:(')
             }
-            xhr.open('POST',`http://localhost:4000/stopsharing?token=${userdetails['token']}`)
+            xhr.open('POST',`http://10.107.115.212:4000/stopsharing?token=${userdetails['token']}`)
             xhr.setRequestHeader('Content-Type','application/json;charset=UTF-8')
             xhr.send(JSON.stringify({'filename':filename,'cwdstring':info[shareids[e.target.id]]['cwd']}))
         }
@@ -3125,7 +3125,7 @@ function showremovefavicon(){
             xhr.onerror = function (){
                 displaypopup('No network connection:(')
             }
-            xhr.open('POST','http://localhost:4000/removefav')
+            xhr.open('POST','http://10.107.115.212:4000/removefav')
             xhr.setRequestHeader('Content-Type','application/json;charset=UTF-8')
             xhr.send(JSON.stringify({'token':userdetails['token'],'cwd':info[id]['cwd'],'name':info[id]['name']}))
         }
@@ -3165,7 +3165,7 @@ function showremovefromcol() {
             xhr.onerror = function (){
                 displaypopup('No network connection:(')
             }
-            xhr.open('POST','http://localhost:4000/removefromcol')
+            xhr.open('POST','http://10.107.115.212:4000/removefromcol')
             xhr.setRequestHeader('Content-Type','application/json;charset=UTF-8')
             xhr.send(JSON.stringify({'token':userdetails['token'],'cwd':info[id]['cwd'],'name':info[id]['name'],'cname':curcolname}))
         }
@@ -3208,7 +3208,7 @@ function getFiles() {
             showNav()
             displaypopup('No network connection:(')
         }
-        xhr.open('GET', `http://localhost:4000/listallfiles?token=${userdetails['token']}&cwd=${cwd}&cwdstring=${cwdstring}`)
+        xhr.open('GET', `http://10.107.115.212:4000/listallfiles?token=${userdetails['token']}&cwd=${cwd}&cwdstring=${cwdstring}`)
         xhr.send()
     }
 }

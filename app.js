@@ -4,19 +4,37 @@ const fileUpload = require('express-fileupload')
 const fileprocessor = require('./FileProcessor')
 const loginsignup =require('./login-signup')
 const path = require('path')
+const {auth}  = require('express-openid-connect');
+const logger = require('morgan');
+
 const cors = require('cors')
 require('dotenv').config()
 const corsoptions ={
     origin:'*',
     optionsSuccessStatus:200
 }
+const config = {
+    authRequired: false,
+    auth0Logout: true
+};
+if (!config.baseURL && !process.env.BASE_URL && process.env.APP_PORT && process.env.NODE_ENV !== 'production') {
+    config.baseURL = `http://${process.env.HOST}:${process.env.APP_PORT}`;
+}
 const server = express()
-server.use(cors(corsoptions))
 const imageserver= express()
+
+server.use(logger('dev'));
+server.use(cors(corsoptions))
+server.use(auth(config));
+server.use(function (req, res, next) {
+    res.locals.user = req.oidc.user;
+    next();
+});
 server.use(bodyparser.urlencoded({extended: false}))
 server.use(bodyparser.json())
 server.use(fileUpload())
 server.use('/resource',express.static(path.join(__dirname,'static')))
+
 imageserver.use(cors(corsoptions))
 imageserver.use('/images',express.static(path.join(__dirname,'serverimages')))
 
@@ -72,9 +90,9 @@ imageserver.get('/images/:token/:imagename',(req,res)=>{
     res.sendFile(path.join(__dirname,'serverimages',req.params.token,req.params.imagename))
 })
 
-server.listen(process.env.APP_PORT || 4000,()=>{
-    console.log('we are live')
+server.listen(process.env.APP_PORT,process.env.HOST || 4000,()=>{
+    console.log(`listening on http://${process.env.HOST}:${process.env.APP_PORT}/loginpage`)
 })
-imageserver.listen(process.env.IMG_PORT || 3000,()=>{
-    console.log('imagserver live')
+imageserver.listen(process.env.IMG_PORT,process.env.HOST || 3000,()=>{
+    console.log(`listening on http://${process.env.HOST}:${process.env.IMG_PORT}/images/`)
 })

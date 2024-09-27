@@ -249,7 +249,7 @@ select:hover{
     border-width: thin;
 }
 #add-new:hover{
-    background-color: white;
+    opacity: 90%;
 }
 #add-new-child{
     position: absolute;
@@ -257,7 +257,6 @@ select:hover{
     top: 100px;
     left: 120px;
     visibility: hidden;
-    /*box-shadow: 1px 1px 1px #c0c0bf;*/
     display: flex;
     background-color: white;
     flex-direction: column;
@@ -271,7 +270,7 @@ select:hover{
     padding: 10px 30px 10px 20px;
 }
 #add-new-child label:hover{
-    background-color: whitesmoke;
+    opacity: 80%;
     cursor: pointer;
 }
 #collection-list{
