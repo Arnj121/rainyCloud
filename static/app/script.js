@@ -1241,6 +1241,7 @@ function inituserdetails() {
             userdetails['name']=data['name']
             userdetails['loggedin']=1
             userdetails['token']=data['sub'].split('|')[1]
+            document.getElementById('username').innerText=userdetails['name']
         }
     }
     xhr.open('GET',`http://localhost:4000/profile`)

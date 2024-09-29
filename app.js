@@ -19,7 +19,6 @@ const config = {
     authRequired: false,
     auth0Logout: true,
     secret: process.env.SECRET,
-    baseURL: process.env.BASE_URL,
     clientID: process.env.CLIENT_ID,
     issuerBaseURL: process.env.ISSUER_BASE_URL,
 };
@@ -99,7 +98,7 @@ imageserver.get('/images/:token/:imagename',(req,res)=>{
 })
 
 server.listen(process.env.APP_PORT,process.env.HOST || 4000,()=>{
-    console.log(`listening on http://${process.env.HOST}:${process.env.APP_PORT}/loginpage`)
+    console.log(`listening on http://${process.env.HOST}:${process.env.APP_PORT}/`)
 })
 imageserver.listen(process.env.IMG_PORT,process.env.HOST || 3000,()=>{
     console.log(`listening on http://${process.env.HOST}:${process.env.IMG_PORT}/images/`)

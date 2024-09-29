@@ -6,3 +6,5 @@ dockerfile
 initIP.js
 webpack.config.js
 static/dist
+serverfiles
+serverimages
