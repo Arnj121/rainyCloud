@@ -14,6 +14,8 @@ const corsoptions ={
     origin:'*',
     optionsSuccessStatus:200
 }
+fs.mkdir(path.join(__dirname,'serverfiles'),(err)=>{console.log('unable to create directory serverfiles')})
+fs.mkdir(path.join(__dirname,'serverimages'),(err)=>{console.log('unable to create directory serverfiles')})
 
 const config = {
     authRequired: false,
