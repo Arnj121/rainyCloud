@@ -4,6 +4,7 @@ const fileUpload = require('express-fileupload')
 const fileprocessor = require('./FileProcessor')
 const loginsignup =require('./login-signup')
 const path = require('path')
+const fs=require('fs')
 // const {auth}  = require('express-openid-connect');
 const logger = require('morgan');
 const { auth,requiresAuth } = require('express-openid-connect');
@@ -14,8 +15,21 @@ const corsoptions ={
     origin:'*',
     optionsSuccessStatus:200
 }
-fs.mkdir(path.join(__dirname,'serverfiles'),(err)=>{console.log('unable to create directory serverfiles')})
-fs.mkdir(path.join(__dirname,'serverimages'),(err)=>{console.log('unable to create directory serverfiles')})
+
+fs.access(path.join(__dirname,'serverfiles'),(err)=>{
+    if(err)
+        fs.mkdir(path.join(__dirname,'serverfiles'),(err)=>{console.log('unable to create directory serverfiles')})
+    else
+        console.log('Directory already exists')
+
+})
+fs.access(path.join(__dirname,'serverimages'),(err)=>{
+    if(err)
+        fs.mkdir(path.join(__dirname,'serverimages'),(err)=>{console.log('unable to create directory serverfiles')})
+    else
+        console.log('Directory already exists')
+
+})
 
 const config = {
     authRequired: false,
