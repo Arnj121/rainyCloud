@@ -1,3 +1,4 @@
+import './style.scss'
 let fuw=0,iuw=0,fullscreen=0,editmode=0,ew=0,pw=0,dw=0,cfw=0,sw=0,share=0,abtwind=0,cfoldwin=0;
 let rw=0,cw=0,addc=0,neww=0,searchresultsshowing=0,searchtrack=-1,searchvalue=0,searchids=[];
 let currentselected = 0,contextmenuopened=0,minicontextmenuopened=0,popup=0,addpeople=0,peopleselct=0
@@ -9,7 +10,7 @@ let imagesSelected ={};
 let rndids={},rndlist=[],info={},searchredirest={};
 let cwd='ROOT',cwdstring='ROOT'
 let browsehistory = ['ROOT']
-let p=0,nav=0,collection=0;
+let nav=0,collection=0;
 let userdetails = {'loggedin':0,'name':0,'space':0,'token':0}
 let searchresults={}
 let absoluteids=[];
@@ -93,10 +94,13 @@ function initspace(){
     let xhr = new XMLHttpRequest()
     xhr.onreadystatechange = function () {
         if(xhr.readyState ==4){
-            let t=parseInt(this.responseText)
-            userdetails['space'] = t
+            let t=JSON.parse(this.responseText)
+            if(t['result']!='null')
+                userdetails['space'] = t['result']
+            else
+                userdetails['space']=0
             displayspace()
-            updateCookie('getspace',t.toString())
+            updateCookie('getspace', t.toString())
         }
     }
     xhr.onerror = function (){
@@ -228,9 +232,6 @@ document.getElementById('setting-icon').onclick = ()=>{
         sw=1
         document.getElementById('settings').style.visibility = 'visible'
     }
-}
-document.getElementById('user-info').onclick = ()=>{
-    //code red
 }
 
 function convertBytes(bytes){
@@ -1244,7 +1245,6 @@ function inituserdetails() {
     }
     xhr.open('GET',`http://localhost:4000/profile`)
     xhr.send()
-    // document.getElementById('username').innerText=userdetails['name']
 }
 
 document.getElementById('logout-lbl').onclick=logout

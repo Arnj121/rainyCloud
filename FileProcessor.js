@@ -8,9 +8,9 @@ const getspace = (req,res)=>{
     let token=req.oidc.user['sub'].split('|')[1]
     db.getDb().collection('users').findOne({'token': token}, (err, result) => {
         if (result==null)
-            res.send(0)
+            res.send({'result':'null'})
         else
-            res.send(result.value.space.toString())
+            res.send({'result':result.value.space.toString()})
     })
 }
 const getprofile =(req,res)=>{

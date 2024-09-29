@@ -4,3 +4,5 @@ node_modules
 dockerfile
 .env
 initIP.js
+webpack.config.js
+static/dist

@@ -49,10 +49,8 @@ server.use('/resource',express.static(path.join(__dirname,'static')))
 imageserver.use(cors(corsoptions))
 imageserver.use('/images',express.static(path.join(__dirname,'serverimages')))
 
-server.get('/loginpage',(req,res)=>{
-    res.sendFile(path.join(__dirname,'static','login','index.html'))})
 server.get('/',requiresAuth(),(req,res)=>{
-    res.sendFile(path.join(__dirname,'static','app','index.html'))
+    res.sendFile(path.join(__dirname,'static','dist','index.html'))
 })
 server.get('/ping',(req,res)=>{res.send({status:200})})
 server.get('/getspace',fileprocessor.getspace)
