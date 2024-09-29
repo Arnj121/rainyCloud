@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>rainyCloud - Home</title>
-    <link href="http://10.107.115.212:4000/resource/app/style.css" rel="stylesheet" type="text/css"/>
-    <link href="http://10.107.115.212:2045/fontawesome.css" rel="stylesheet" type="text/css"/>
+    <link href="http://localhost:4000/resource/app/style.css" rel="stylesheet" type="text/css"/>
+    <link href="http://localhost:2045/fontawesome.css" rel="stylesheet" type="text/css"/>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
     </style>
-    <link rel="manifest" href="http://10.107.115.212:4000/resource/manifest.json">
+    <link rel="manifest" href="http://localhost:4000/resource/manifest.json">
 
 </head>
 <body>
@@ -72,8 +72,6 @@
         </select>
         <label id="close-settings-window" class="confirm-keys">close</label>
     </div>
-
-
     <div id="settings">
         <label id="logout-lbl"><i class="fal fa-sign-out-alt" style="margin-right: 15px"></i>sign out</label>
         <label id="add-people"><i class="fal fa-user-plus" style="margin-right: 10px"></i>Add People</label>
@@ -464,8 +462,8 @@
 </body>
 <script>
     if('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('http://10.107.115.212:4000/resource/sw.js', { scope: 'http://10.107.115.212:4000/resource/' });
+        navigator.serviceWorker.register('http://localhost:4000/resource/sw.js', { scope: 'http://localhost:4000/resource/' });
     }
 </script>
 </html>
-<script src="http://10.107.115.212:4000/resource/app/script.js"></script>
+<script src="http://localhost:4000/resource/app/script.js"></script>

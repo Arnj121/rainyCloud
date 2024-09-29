@@ -5,10 +5,10 @@ self.addEventListener('install', event => {
     event.waitUntil((async () => {
         const cache = await caches.open(CACHE_NAME);
         cache.addAll([
-            'http://10.107.115.212:4000/resource/app/script.js',
-            'http://10.107.115.212:4000/resource/app/style.css',
-            'http://10.107.115.212:4000/resource/login/style.css',
-            'http://10.107.115.212:4000/resource/login/script.js',
+            'http://localhost:4000/resource/app/script.js',
+            'http://localhost:4000/resource/app/style.css',
+            'http://localhost:4000/resource/login/style.css',
+            'http://localhost:4000/resource/login/script.js',
         ]);
     })());
 });

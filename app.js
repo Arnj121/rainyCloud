@@ -4,8 +4,9 @@ const fileUpload = require('express-fileupload')
 const fileprocessor = require('./FileProcessor')
 const loginsignup =require('./login-signup')
 const path = require('path')
-const {auth}  = require('express-openid-connect');
+// const {auth}  = require('express-openid-connect');
 const logger = require('morgan');
+const { auth,requiresAuth } = require('express-openid-connect');
 
 const cors = require('cors')
 require('dotenv').config()
@@ -13,10 +14,19 @@ const corsoptions ={
     origin:'*',
     optionsSuccessStatus:200
 }
+
 const config = {
     authRequired: false,
-    auth0Logout: true
+    auth0Logout: true,
+    secret: process.env.SECRET,
+    baseURL: process.env.BASE_URL,
+    clientID: process.env.CLIENT_ID,
+    issuerBaseURL: process.env.ISSUER_BASE_URL,
 };
+// const checkJwt = auth({
+//     audience: process.env.API_IDENTIFIER,
+//     issuerBaseURL: process.env.ISSUER_BASE_URL,
+// });
 if (!config.baseURL && !process.env.BASE_URL && process.env.APP_PORT && process.env.NODE_ENV !== 'production') {
     config.baseURL = `http://${process.env.HOST}:${process.env.APP_PORT}`;
 }
@@ -26,6 +36,7 @@ const imageserver= express()
 server.use(logger('dev'));
 server.use(cors(corsoptions))
 server.use(auth(config));
+
 server.use(function (req, res, next) {
     res.locals.user = req.oidc.user;
     next();
@@ -40,7 +51,7 @@ imageserver.use('/images',express.static(path.join(__dirname,'serverimages')))
 
 server.get('/loginpage',(req,res)=>{
     res.sendFile(path.join(__dirname,'static','login','index.html'))})
-server.get('/mainpage',(req,res)=>{
+server.get('/',requiresAuth(),(req,res)=>{
     res.sendFile(path.join(__dirname,'static','app','index.html'))
 })
 server.get('/ping',(req,res)=>{res.send({status:200})})
@@ -54,9 +65,8 @@ server.delete('/deletefile',fileprocessor.deleteFile)
 server.delete('/deleteimage',fileprocessor.deleteImage)
 server.put('/updatefilename',fileprocessor.updateFileName)
 server.put('/updateimagename',fileprocessor.updateImageName)
-server.get('/login',loginsignup.userLogin)
-server.post('/signup',loginsignup.userSignup)
-server.get('/logout',loginsignup.userlogout)
+server.get('/getlogin',(req,res)=>{res.send({isAuthenticated: req.oidc.isAuthenticated()})})
+server.get('/profile',fileprocessor.getprofile)
 server.post('/createfolder',fileprocessor.createFolder)
 server.delete('/deletefolder',fileprocessor.deleteFolder)
 server.get('/search',fileprocessor.search)

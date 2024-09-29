@@ -1,16 +1,33 @@
 const fs= require('fs')
 const path = require('path')
 const db= require('./db')
+const loginsignup=require('./login-signup')
 require('dotenv').config()
+
 const getspace = (req,res)=>{
-    db.getDb().collection('users').findOne({'email':req.query.email},(err,result)=>{
-        if (err)
+    let token=req.oidc.user['sub'].split('|')[1]
+    db.getDb().collection('users').findOne({'token': token}, (err, result) => {
+        if (result==null)
             res.send(0)
         else
             res.send(result.value.space.toString())
     })
 }
-
+const getprofile =(req,res)=>{
+    let token=req.oidc.user['sub'].split('|')[1]
+    console.log(req.oidc.user['sub'].split('|')[1])
+    db.getDb().collection('users').findOne({'token': token},(err,result)=>{
+        if (result==null){
+            console.log('usercreated')
+            db.getDb().collection('users').insertOne({'token':token,'value':
+                    {'email':req.oidc.user['email'],'name':req.oidc.user['name'],"space":0}})
+            loginsignup.createspace(token)
+            res.send(req.oidc.user)
+        }
+        else
+            res.send(req.oidc.user)
+    })
+}
 const fileDbsave  =(obj,token,cwd,type,update=0) =>{
     if(update == 1){
         let n = new Date()
@@ -21,8 +38,8 @@ const fileDbsave  =(obj,token,cwd,type,update=0) =>{
     else{
         db.getDb().collection('userfiles').insertOne({'token':token,'cwd':cwd,'name':obj.name,'size':obj.size,'mimetype':obj['mimetype'],
                                             'lastmod':obj.lastmod,'type':type,'fav':0,'collections':[],'shared':0,'owner':token,'bin':0,'FILES':'FILES'})
-        db.getDb().collection('users').findOne({'value.token':token},(err,result)=>{
-            db.getDb().collection('users').findOneAndUpdate({'value.token':token},{$set:{'value.space':parseInt(result.value.space)+obj.size}})
+        db.getDb().collection('users').findOne({'token':token},(err,result)=>{
+            db.getDb().collection('users').findOneAndUpdate({'token':token},{$set:{'value.space':parseInt(result.value.space)+obj.size}})
         })
     }
 }
@@ -78,7 +95,7 @@ const uploadImage = (req,res)=>{
 const loadFile = (req,res)=>{
     console.log('loading file')
     let fileName = req.query.filename
-    let token = req.query.token
+    let token = req.oidc.user['sub'].split('|')[-1]
     let dest = path.join(__dirname, 'serverfiles',token, fileName)
     console.log('success', dest)
     fs.readFile(`${dest}`, 'utf8', (err, data) => {
@@ -86,7 +103,7 @@ const loadFile = (req,res)=>{
     })
 }
 const loadImage = (req,res)=>{
-    let token =req.query.token
+    let token =req.oidc.user['sub'].split('|')[-1]
     let cwdstring = typeof req.query.cwdstring == 'object' ? req.query.cwdstring[0] : req.query.cwdstring
     console.log(cwdstring,'fromloadi')
     let fileName = req.query.filename
@@ -96,7 +113,7 @@ const loadImage = (req,res)=>{
 }
 
 const deleteFile = (req,res)=>{
-    let token = req.query.token
+    let token = req.oidc.user['sub'].split('|')[-1]
     let cwdstring=req.query.cwdstring
     let fileName = req.query.filename
     if (fileDBdelet('Files',fileName, token,cwdstring))
@@ -106,7 +123,7 @@ const deleteFile = (req,res)=>{
 }
 const deleteImage = (req,res)=> {
     let fileName = req.query.filename
-    let token = req.query.token
+    let token = req.oidc.user['sub'].split('|')[-1]
     let cwdstring = req.query.cwdstring
     if (fileDBdelet('images',fileName, token,cwdstring))
         res.send('true')
@@ -114,7 +131,7 @@ const deleteImage = (req,res)=> {
         res.send('false')
 }
 const listAllFiles=(req,res)=> {
-    let token = req.query.token
+    let token = req.oidc.user['sub'].split('|')[1]
     let cwdstring = typeof req.query.cwdstring =='object' ? req.query.cwdstring[0]: req.query.cwdstring
     let responseJson = {}
     let c = 0
@@ -147,7 +164,7 @@ const listAllFiles=(req,res)=> {
 
 }
 const updateFileName = (req,res)=>{
-    let token = req.query.token
+    let token = req.oidc.user['sub'].split('|')[-1]
     let cwdstring = req.query.cwdstring
     let oldname = req.query.oldname
     let newname = req.query.newname
@@ -160,7 +177,7 @@ const updateFileName = (req,res)=>{
     res.send('true')
 }
 const updateImageName = (req,res)=>{
-    let token = req.query.token
+    let token = req.oidc.user['sub'].split('|')[-1]
     let cwdstring = req.query.cwdstring
     let oldname = req.query.oldname
     let newname = req.query.newname
@@ -174,7 +191,7 @@ const updateImageName = (req,res)=>{
 }
 const createFolder = function(req,res){
     let foldername=req.query.name
-    let token = req.query.token
+    let token = req.oidc.user['sub'].split('|')[-1]
     let cwdstring = req.query.cwdstring
     let d =new Date().toString().slice(0,24)
     db.getDb().collection('userfiles').insertOne({'token':token,'cwd':cwdstring,'name':foldername,'created':d,'fav':0,'collections':[],'bin':0,'mimetype':'dir','type':'dir',
@@ -185,7 +202,7 @@ const createFolder = function(req,res){
 
 const deleteFolder = (req,res) =>{
     console.log('deleting folders')
-    let token = req.query.token
+    let token = req.oidc.user['sub'].split('|')[-1]
     let foldername=req.query.filename
     let cwdstring = req.query.cwdstring
     deleteContentsFromDirectory(foldername,cwdstring)
@@ -213,7 +230,7 @@ const deleteFolder = (req,res) =>{
 const updatefoldername = (req,res)=>{
     let oldname = req.query.oldname
     let newname = req.query.newname
-    let token = req.query.token
+    let token = req.oidc.user['sub'].split('|')[-1]
     let cwdstring = req.query.cwdstring
     db.getDb().collection('userfiles').findOneAndUpdate({'token':token,'cwd':cwdstring,'name':oldname},{$set:{'name':newname}})
     db.getDb().collection('userfiles').updateMany({'token':token,'cwd':cwdstring+'-'+oldname},{$set:{'cwd':cwdstring+'-'+newname}})
@@ -222,7 +239,7 @@ const updatefoldername = (req,res)=>{
 
 const search = function(req,res){
     let name = req.query['search']
-    let token = req.query['token']
+    let token = req.oidc.user['sub'].split('|')[1]
     let responseJson = {},s,ids=0
     let searchloc = req.query.searchloc
     let owner = req.query.owner
@@ -262,14 +279,14 @@ const search = function(req,res){
     }
     else if(searchloc == 'everywhere' && owner=='user' && email.length!=0){
         console.log(2)
-        db.getDb().collection('users').findOne({'email':email},(err,result)=>{
-            let x= result.value.token,y=result.value.name
-            db.getDb().collection('share').find({'token':x,'name':{$regex:name}}).toArray((err,result)=>{
+        db.getDb().collection('users').findOne({'token':token},(err,result)=>{
+            let y=result.value.name
+            db.getDb().collection('share').find({'token':token,'name':{$regex:name}}).toArray((err,result)=>{
                 for(let i=0;i<result.length;i++){
                     if(result[i]['type'] == 'image' && (searchtype=='all' || searchtype=='images')){
                         responseJson[ids] = {
                             'name': result[i]['name'],
-                            'path': `http://${process.env.HOST || 'localhost'}:300/images/${token}/${result[i]['name']}`, 'type': 'image', 'pathtoshow': `from ${y}`,
+                            'path': `http://${process.env.HOST}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`, 'type': 'image', 'pathtoshow': `from ${y}`,
                         }
                     }
                     else if(result[i]['type'] =='file' && (searchtype=='docs' || searchtype=='all')){
@@ -281,13 +298,13 @@ const search = function(req,res){
                     else if (result[i]['type'] == 'video' && (searchtype == 'video' || searchtype == 'all')) {
                         responseJson[ids] = {
                             'name': result[i]['name'],
-                            'path': `http://${process.env.HOST || 'localhost'}:300/images/${token}/${result[i]['name']}`, 'type': 'video', 'pathtoshow': `from ${y}`,
+                            'path': `http://${process.env.HOST}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`, 'type': 'video', 'pathtoshow': `from ${y}`,
                         }
                     }
                     else if (result[i]['type'] == 'audio' && (searchtype == 'audio' || searchtype == 'all')) {
                         responseJson[ids] = {
                             'name': result[i]['name'],
-                            'path': `http://${process.env.HOST || 'localhost'}:300/images/${token}/${result[i]['name']}`, 'type': 'audio', 'pathtoshow': `from ${y}`,
+                            'path': `http://${process.env.HOST}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`, 'type': 'audio', 'pathtoshow': `from ${y}`,
                         }
                     }
                     ids+=1
@@ -303,7 +320,7 @@ const search = function(req,res){
                     if (result[i]['type'] == 'image' && (searchtype == 'all' || searchtype == 'images')) {
                         responseJson[ids] = {
                             'name': result[i]['name'],
-                            'path': `http://${process.env.HOST || 'localhost'}:300/images/${token}/${result[i]['name']}`, 'type': 'image', 'pathtoshow': 'shared with me'
+                            'path': `http://${process.env.HOST}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`, 'type': 'image', 'pathtoshow': 'shared with me'
                         }
                     } else if (result[j]['type'] == 'file' && (searchtype == 'docs' || searchtype == 'all')) {
                         responseJson[ids] = {
@@ -314,13 +331,13 @@ const search = function(req,res){
                     else if (result[i]['type'] == 'video' && (searchtype == 'video' || searchtype == 'all')) {
                         responseJson[ids] = {
                             'name': result[i]['name'],
-                            'path': `http://${process.env.HOST || 'localhost'}:300/images/${token}/${result[i]['name']}`, 'type': 'video', 'pathtoshow': 'shared with me'
+                            'path': `http://${process.env.HOST}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`, 'type': 'video', 'pathtoshow': 'shared with me'
                         }
                     }
                     else if (result[i]['type'] == 'audio' && (searchtype == 'audio' || searchtype == 'all')) {
                         responseJson[ids] = {
                             'name': result[i]['name'],
-                            'path': `http://${process.env.HOST || 'localhost'}:300/images/${token}/${result[i]['name']}`, 'type': 'audio', 'pathtoshow': 'shared with me'
+                            'path': `http://${process.env.HOST}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`, 'type': 'audio', 'pathtoshow': 'shared with me'
                         }
                     }
                     ids++;
@@ -337,7 +354,7 @@ const search = function(req,res){
                     if (result[i]['type'] == 'image' && (searchtype == 'all' || searchtype == 'images')) {
                         responseJson[ids] = {
                             'name': result[i]['name'],
-                            'path': `http://${process.env.HOST || 'localhost'}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`, 'type': 'image', 'pathtoshow': s
+                            'path': `http://${process.env.HOST}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`, 'type': 'image', 'pathtoshow': s
                         }
                     }
                     if (result[i]['type'] == 'file' && (searchtype == 'docs' || searchtype == 'all')) {
@@ -354,13 +371,13 @@ const search = function(req,res){
                     if (result[i]['type'] == 'video' && (searchtype == 'video' || searchtype == 'all')) {
                         responseJson[ids] = {
                             'name': result[i]['name'],
-                            'path': `http://${process.env.HOST || 'localhost'}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`, 'type': 'video', 'pathtoshow': s
+                            'path': `http://${process.env.HOST}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`, 'type': 'video', 'pathtoshow': s
                         }
                     }
                     if (result[i]['type'] == 'audio' && (searchtype == 'audio' || searchtype == 'all')) {
                         responseJson[ids] = {
                             'name': result[i]['name'],
-                            'path': `http://${process.env.HOST || 'localhost'}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`, 'type': 'audio', 'pathtoshow': s
+                            'path': `http://${process.env.HOST}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`, 'type': 'audio', 'pathtoshow': s
                         }
                     }
                     ids++
@@ -386,12 +403,12 @@ const createfile= function(req,res){
 const addfav = (req,res)=>{
     let filename = req.query.filename
     let cwdstring = req.query.cwdstring
-    let token = req.query.token
+    let token = req.oidc.user['sub'].split('|')[-1]
     db.getDb().collection('userfiles').findOneAndUpdate({'token':token,'cwd':cwdstring,'name':filename},{$set:{'fav':1}})
     res.send('done')
 }
 const getfav = (req,res)=> {
-    let token = req.query.token
+    let token = req.oidc.user['sub'].split('|')[-1]
     let c = 0
     let responseJson = {}
     db.getDb().collection('userfiles').find({'token':token,'fav':1}).toArray((err,result)=>{
@@ -408,7 +425,7 @@ const getfav = (req,res)=> {
             else if ((result[i]['type'] == 'image' || result[i]['type']=='video'|| result[i]['type']=='audio') && result[i]['bin'] == 0)
                 responseJson[c] = {
                     'type': result[i]['type'],
-                    'src': `http://${process.env.HOST || 'localhost'}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`,
+                    'src': `http://${process.env.HOST}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`,
                     'name': result[i]['name'],
                     'mimetype': result[i]['mimetype'],
                     'size': result[i]['size'],
@@ -429,7 +446,7 @@ const getfav = (req,res)=> {
     })
 }
 const getcollection = (req,res)=>{
-    let token = req.query.token
+    let token = req.oidc.user['sub'].split('|')[1]
     db.getDb().collection('collection').findOne({'token':token},(err,result)=>{
         if(result) {
             let colllsit = result.value
@@ -442,12 +459,12 @@ const getcollection = (req,res)=>{
 }
 const createcollection = (req,res)=>{
     let name = req.query.name
-    let token = req.query.token
+    let token = req.oidc.user['sub'].split('|')[-1]
     db.getDb().collection('collection').update({'token':token},{$push:{'value':name}})
     res.send('done')
 }
 const addtocollection = (req,res)=> {
-    let token = req.query.token
+    let token = req.oidc.user['sub'].split('|')[-1]
     let cname = req.query.cname.substr(0,req.query.cname.length-2).split('!!')
     let cwdstring = req.query.cwdstring
     let type = req.query.type;
@@ -461,7 +478,7 @@ const addtocollection = (req,res)=> {
 }
 
 const listcollection = (req,res)=>{
-    let token  = req.query.token
+    let token  = req.oidc.user['sub'].split('|')[-1]
     let cname = req.query.cname
     let c = 0
     let responseJson = {}
@@ -479,7 +496,7 @@ const listcollection = (req,res)=>{
                 else if (result[i]['type'] == 'image' || result[i]['type']=='video' || result[i]['type']=='audio')
                     responseJson[c] = {
                         'type': result[i]['type'],
-                        'src': `http://${process.env.HOST || 'localhost'}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`,
+                        'src': `http://${process.env.HOST}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`,
                         'name':result[i]['name'],
                         'mimetype':result[i]['mimetype'],
                         'size':result[i]['size'],
@@ -501,7 +518,7 @@ const listcollection = (req,res)=>{
     })
 }
 const listBinFiles = (req,res)=>{
-    let token = req.query.token
+    let token = req.oidc.user['sub'].split('|')[-1]
     let responseJson = {},c=0
     db.getDb().collection('userfiles').find({'token':token,'bin':1}).toArray((err,result)=>{
         console.log(456,result)
@@ -517,7 +534,7 @@ const listBinFiles = (req,res)=>{
                     'cwd': result[i]['cwd']
                 }
             } else if (result[i]['type'] == 'image' || result[i]['type']=='video' || result[i]['type']=='audio') {
-                let dest = `http://${process.env.HOST || 'localhost'}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`
+                let dest = `http://${process.env.HOST}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`
                 responseJson[c] = {
                     'type': result[i]['type'],
                     'src': dest,
@@ -540,7 +557,7 @@ const transfer = (req,res)=>{
     let oldcwdstring = req.query.oldcwdstring
     let newcwdstring = req.query.newcwdstring
     let filename = req.query.filename
-    let token = req.query.token
+    let token = req.oidc.user['sub'].split('|')[-1]
     let type = req.query.type
     let status = req.query.status
     if (oldcwdstring == newcwdstring) {
@@ -587,7 +604,7 @@ const transfer = (req,res)=>{
     }
 }
 const reloadwithfilter= (req,res)=>{
-    let token = req.query.token
+    let token = req.oidc.user['sub'].split('|')[-1]
     let binstatus=0
     let favstatus=0
     let swmstatus=0
@@ -622,7 +639,7 @@ const reloadwithfilter= (req,res)=>{
                 c+=1
             }
             else if(result[i]['type'] == 'image' && filterlist.includes('image-filter')) {
-                let dest = `http://${process.env.HOST || 'localhost'}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`
+                let dest = `http://${process.env.HOST}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`
                 responseJson[c] = {
                     'type': 'image', 'src': dest, 'name': result[i]['name'], 'mimetype': result[i]['mimetype'],
                     'size': result[i]['size'], 'lastmod': result[i]['lastmod'],'owner':token
@@ -634,7 +651,7 @@ const reloadwithfilter= (req,res)=>{
                 c += 1
             }
             else if(result[i]['type'] == 'video' && filterlist.includes('video-filter')) {
-                let dest = `http://${process.env.HOST || 'localhost'}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`
+                let dest = `http://${process.env.HOST}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`
                 responseJson[c] = {
                     'type': 'video', 'src': dest, 'name': result[i]['name'], 'mimetype': result[i]['mimetype'],
                     'size': result[i]['size'], 'lastmod': result[i]['lastmod'],'owner':token
@@ -642,7 +659,7 @@ const reloadwithfilter= (req,res)=>{
                 c += 1
             }
             else if(result[i]['type'] == 'audio' && filterlist.includes('audio-filter')) {
-                let dest = `http://${process.env.HOST || 'localhost'}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`
+                let dest = `http://${process.env.HOST}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`
                 responseJson[c] = {
                     'type': 'audio', 'src': dest, 'name': result[i]['name'], 'mimetype': result[i]['mimetype'],
                     'size': result[i]['size'], 'lastmod': result[i]['lastmod'],'owner':token
@@ -654,7 +671,7 @@ const reloadwithfilter= (req,res)=>{
     })
 }
 const sharefile = (req,res)=>{
-    let token = req.query.token
+    let token = req.oidc.user['sub'].split('|')[-1]
     let cwdstring = req.query.cwdstring
     let email = req.query.email
     let select = req.query.select
@@ -669,7 +686,7 @@ const sharefile = (req,res)=>{
     }
     else if(select == 'share-private' && data.type!='dir'){
         data['cwd'] = 'SHARE'
-        db.getDb().collection('users').findOne({'email':email},(err,result)=>{
+        db.getDb().collection('users').findOne({'token':token},(err,result)=>{
             data['token'] = result['value']['token']
             db.getDb().collection('userfiles').insertOne(data)
                 res.send('done')
@@ -680,7 +697,7 @@ const sharefile = (req,res)=>{
     }
 }
 const getsharefile = (req,res)=>{
-    let token=req.query.token
+    let token=req.oidc.user['sub'].split('|')[1]
     let only=req.query.only
     let responseJson = {},c=0
     if(only=='only'){
@@ -708,10 +725,10 @@ const getsharefile = (req,res)=>{
 }
 const addpeople = (req,res)=> {
     let data = req.body
-    let token = req.query.token
+    let token = req.oidc.user['sub'].split('|')[-1]
     let email = data['0']
     for (let i = 0; i < email.length; i++) {
-        db.getDb().collection('users').findOne({'email': email}, (err, result) => {
+        db.getDb().collection('users').findOne({'token': token}, (err, result) => {
             if (result && result['token'] != token)
                 db.getDb().collection('people').findOneAndUpdate({'token': token}, {$push: {'value': email[i]}})
         })
@@ -719,13 +736,13 @@ const addpeople = (req,res)=> {
     res.send('done')
 }
 const getpeople = (req,res)=>{
-    let token = req.query.token
+    let token = req.oidc.user['sub'].split('|')[-1]
     db.getDb().collection('people').findOne({'token':token},(err,result)=>{
         res.send({'0':result['value']})
     })
 }
 const removepeople =(req,res)=>{
-    let token = req.query.token
+    let token = req.oidc.user['sub'].split('|')[-1]
     let email = req.query.email
     db.getDb().collection('people').findOne({'token':token},(err,result)=>{
         let x = result['value']
@@ -737,7 +754,7 @@ const removepeople =(req,res)=>{
 }
 
 const savefile = (req,res)=>{
-    let token = req.query.token
+    let token = req.oidc.user['sub'].split('|')[-1]
     let owner = req.body.owner
     let data = req.body.val
     let filename = req.body.filename
@@ -753,7 +770,7 @@ const savefile = (req,res)=>{
 }
 
 const restorefile = (req,res)=>{
-    let token = req.query.token
+    let token = req.oidc.user['sub'].split('|')[-1]
     let cwd = req.body.cwdstring
     let filename = req.body.filename
     db.getDb().collection('userfiles').findOneAndUpdate({'token':token,'cwd':cwd,'name':filename},{$set:{'bin':0}})
@@ -763,7 +780,7 @@ const restorefile = (req,res)=>{
 const download = (req,res)=>{
     let file = req.query.name
     let type = req.query.type
-    let token = req.query.token
+    let token = req.oidc.user['sub'].split('|')[-1]
     if(type=='image' || type=='video' || type=='audio'){
         res.download(path.join(__dirname,'serverimages',token,file),file)
         console.log('image downloaded')
@@ -775,12 +792,12 @@ const download = (req,res)=>{
     }
 }
 const getfilesshared = (req,res)=>{
-    let token = req.query.token
+    let token = req.oidc.user['sub'].split('|')[-1]
     let responseJson = {},c=0
     db.getDb().collection('userfiles').find({'token':token,'shared':1}).toArray((err,result)=>{
         for(let i=0;i<result.length;i++){
             if (result[i]['type'] == 'image' || result[i]['type'] =='video' || result[i]['type'] =='audio'){
-                let dest = `http://${process.env.HOST || 'localhost'}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`
+                let dest = `http://${process.env.HOST}:${process.env.IMG_PORT}/images/${token}/${result[i]['name']}`
                 responseJson[c] = {
                     'type': result[i]['type'], 'src': dest, 'name': result[i]['name'],'mimetype': result[i]['mimetype'],
                     'size': result[i]['size'], 'lastmod': result[i]['lastmod'],'owner':token,'cwd':result[i]['cwd']
@@ -807,7 +824,7 @@ const removefav = (req,res)=>{
 }
 
 const spaceanalysis = (req,res)=>{
-    let token = req.query.token
+    let token = req.oidc.user['sub'].split('|')[-1]
     db.getDb().collection('userfiles').find({'token':token}).toArray((err,result)=>{
         if(result.length!=0){
             let imgsize=0,imgcount=0,docsize=0,doccount=0,videosize=0,videocount=0,audiosize=0,audiocount=0
@@ -839,7 +856,7 @@ const spaceanalysis = (req,res)=>{
 }
 const stopsharing = (req,res)=>{
     let filename = req.body.filename
-    let token = req.query.token
+    let token = req.oidc.user['sub'].split('|')[-1]
     let cwd = req.body.cwdstring
     db.getDb().collection('userfiles').findOneAndUpdate({'token':token,'cwd':cwd,'name':filename},{$set:{'shared':0}})
     db.getDb().collection('share').deleteOne({'owner':token,'name':filename})
@@ -847,7 +864,7 @@ const stopsharing = (req,res)=>{
 }
 const removecol = (req,res)=>{
     let name = req.body.name
-    let token = req.body.token
+    let token = req.oidc.user['sub'].split('|')[1]
     db.getDb().collection('collection').findOne({'token':token},(err,result)=>{
         let x = result.value
         x  = x.slice(0,x.indexOf(name)).concat(x.slice(x.indexOf(name)+1,x.length))
@@ -857,7 +874,7 @@ const removecol = (req,res)=>{
 }
 const removefromcol = (req,res)=>{
     let cname = req.body.cname
-    let token = req.body.token
+    let token = req.oidc.user['sub'].split('|')[1]
     let name = req.body.name
     let cwd = req.body.cwd
     db.getDb().collection('userfiles').findOne({'token':token,'cwd':cwd,'name':name,'collections':{$in:[cname]}},(err,result)=>{
@@ -868,6 +885,6 @@ const removefromcol = (req,res)=>{
     })
 }
 
-module.exports = {getspace,uploadFile,uploadImage,loadFile,loadImage,deleteFile,deleteImage,listAllFiles,updatefoldername,download,getfilesshared,removecol,
+module.exports = {getspace,getprofile,uploadFile,uploadImage,loadFile,loadImage,deleteFile,deleteImage,listAllFiles,updatefoldername,download,getfilesshared,removecol,
 updateFileName,updateImageName,createFolder,deleteFolder,search,createfile,addfav,getfav,getcollection,createcollection,listBinFiles,removefav,stopsharing,
 transfer,addtocollection,listcollection,reloadwithfilter,sharefile,getsharefile,addpeople,getpeople,removepeople,savefile,restorefile,spaceanalysis,removefromcol}
