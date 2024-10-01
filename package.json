@@ -2,10 +2,11 @@
   "name": "cloud",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "backend/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack"
+    "build": "webpack",
+    "start": "node app"
   },
   "keywords": [],
   "author": "",

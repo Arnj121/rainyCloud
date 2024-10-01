@@ -8,7 +8,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
     </style>
-    <link rel="manifest" href="http://localhost:4000/resource/manifest.json">
+    <link rel="manifest" href="http://localhost:4000/resource/PWA/manifest.json">
 
 </head>
 <body>
@@ -462,7 +462,7 @@
 </body>
 <script>
     if('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('http://localhost:4000/resource/sw.js', { scope: 'http://localhost:4000/resource/' });
+        navigator.serviceWorker.register('http://localhost:4000/resource/PWA/sw.js', { scope: 'http://localhost:4000/resource/PWA/' });
     }
 </script>
 </html>

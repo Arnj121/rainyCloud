@@ -2,8 +2,9 @@ node_modules
 .idea
 .dockerignore
 dockerfile
-.env
+backend/.env
 initIP.js
 webpack.config.js
 serverfiles
 serverimages
+logs
