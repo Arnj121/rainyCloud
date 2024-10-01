@@ -3,21 +3,21 @@
   "name": "RainyCloud",
   "short_name": "Rainy Cloud",
   "description": "App to access cloud resources",
-  "start_url": "http://localhost:4000/resource/login/index.html",
+  "start_url": "http://localhost:4000/",
   "background_color": "#2f3d58",
   "theme_color": "#2f3d58",
   "orientation": "any",
   "display": "standalone",
   "icons": [
     {
-      "src": "http://localhost:4000/resource/icon.png",
+      "src": "http://localhost:4000/resource/PWA/icon.png",
       "sizes": "512x512"
     }
   ],
   "screenshots": [
     {
 
-      "src": "http://localhost:4000/resource/screenshot.png",
+      "src": "http://localhost:4000/resource/PWA/screenshot.png",
       "sizes": "800x450",
       "type": "image/png",
       "form_factor": "wide",
@@ -25,7 +25,7 @@
     },
     {
 
-      "src": "http://localhost:4000/resource/screenshotm.png",
+      "src": "http://localhost:4000/resource/PWA/screenshotm.png",
       "sizes": "725x1080",
       "type": "image/png",
       "form_factor": "narrow",

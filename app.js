@@ -1,8 +1,8 @@
 const express = require('express')
 const bodyparser = require('body-parser')
 const fileUpload = require('express-fileupload')
-const fileprocessor = require('./FileProcessor')
-const loginsignup =require('./login-signup')
+const fileprocessor = require('./backend/FileProcessor')
+const loginsignup =require('./backend/login-signup')
 const path = require('path')
 const fs=require('fs')
 const logger = require('morgan');
@@ -16,6 +16,12 @@ const corsoptions ={
     optionsSuccessStatus:200
 }
 
+fs.access(path.join(__dirname,'.env'),(err)=>{
+    if (err){
+        console.log('.env file not found! exiting')
+        process.exit(0)
+    }
+})
 fs.access(path.join(__dirname,'serverfiles'),(err)=>{
     if(err)
         fs.mkdir(path.join(__dirname,'serverfiles'),(err)=>{console.log('unable to create directory serverfiles')})
@@ -108,9 +114,9 @@ imageserver.get('/images/:token/:imagename',(req,res)=>{
     res.sendFile(path.join(__dirname,'serverimages',req.params.token,req.params.imagename))
 })
 
-server.listen(process.env.APP_PORT,process.env.HOST || 4000,()=>{
+server.listen(process.env.APP_PORT,process.env.HOST,()=>{
     console.log(`listening on http://${process.env.HOST}:${process.env.APP_PORT}/`)
 })
-imageserver.listen(process.env.IMG_PORT,process.env.HOST || 3000,()=>{
+imageserver.listen(process.env.IMG_PORT,process.env.HOST,()=>{
     console.log(`listening on http://${process.env.HOST}:${process.env.IMG_PORT}/images/`)
 })
