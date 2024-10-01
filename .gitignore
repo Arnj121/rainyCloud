@@ -5,5 +5,3 @@ dockerfile
 .env
 serverfiles
 serverimages
-logs
-nginx.exe
