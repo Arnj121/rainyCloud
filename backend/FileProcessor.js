@@ -3,6 +3,7 @@ const path = require('path')
 const db= require('./db')
 const loginsignup=require('./login-signup')
 require('dotenv').config()
+const axios=require('axios')
 
 const getspace = (req,res)=>{
     let token=req.oidc.user['sub'].split('|')[1]
@@ -60,10 +61,13 @@ const uploadFile = (req,res)=>{
     let lastmodified = req.query.lastmod
     let size = file.size
     let mimetype = file.mimetype
-    let dest = path.join(__dirname,'serverfiles',token,name)
+    let dest = path.join(__dirname.split('\\').slice(0,-1).join('\\'),'serverfiles',token,name)
     fs.writeFile(dest,data,(err)=>{
         if(err)console.log(err)
     })
+    let formdata=new FormData()
+    formdata.set('file',file)
+    axios.post('http://127.0.0.1:2005/analyze',formdata)
     fileDbsave({'name':name,'lastmod':lastmodified,'size':size,'mimetype':mimetype,'fav':0},token,cwdstring,'file')
     console.log(dest,'from upload file')
     res.send('done')
@@ -78,15 +82,22 @@ const uploadImage = (req,res)=>{
     let lastmodified = req.query.lastmod
     let size = file.size
     let mimetype = file.mimetype
-    let dest = path.join(__dirname,'serverimages',token,name)
+    let dest = path.join(__dirname.split('\\').slice(0,-1).join('\\'),'serverimages',token,name)
     file.mv(dest,(err)=>{
         if(err)console.log(err)
     })
-    let stype = 'image'
-    if(mimetype.indexOf('video')!=-1)
+    let formdata=new FormData()
+    formdata.set('file',file)
+    let stype = 'image',port=2001
+    if(mimetype.indexOf('video')!=-1) {
         stype = 'video'
-    if(mimetype.indexOf('audio')!=-1)
-        stype='audio'
+        port=2002
+    }
+    if(mimetype.indexOf('audio')!=-1) {
+        stype = 'audio'
+        port=2004
+    }
+    axios.post(`http://127.0.0.1:${port}/analyze`,formdata)
     fileDbsave({'name':name,'lastmod':lastmodified,'size':size,'mimetype':mimetype,'fav':0},token,cwdstring,stype)
     console.log(dest,'sent')
     res.send('done')
