@@ -10,12 +10,10 @@ const { auth,requiresAuth } = require('express-openid-connect');
 const cors = require('cors')
 
 require('dotenv').config()
-
 const corsoptions ={
     origin:'*',
     optionsSuccessStatus:200
 }
-
 fs.access(path.join(__dirname,'.env'),(err)=>{
     if (err){
         console.log('.env file not found! exiting')

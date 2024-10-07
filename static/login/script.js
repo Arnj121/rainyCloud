@@ -28,15 +28,15 @@ function Login(){
                 document.cookie = `token=${res['token']};expires=${d};path=/;`
                 document.cookie = `email=${res['email']};expires=${d};path=/;`
                 document.cookie = `password=${res['password']};expires=${d};path=/;`
-                location.replace(`http://localhost:4000/mainpage`)
+                location.replace(`http://10.107.115.212:4000/mainpage`)
             }
             else{
                 document.getElementById('error-lbl').style.visibility = 'visible'
             }
         }
     }
-    // xhr.open('GET',`http://localhost:4000/login?email=${email}&password=${password}`)
-    xhr.open('GET',`http://localhost:4000/getlogin`)
+    // xhr.open('GET',`http://10.107.115.212:4000/login?email=${email}&password=${password}`)
+    xhr.open('GET',`http://10.107.115.212:4000/getlogin`)
     xhr.send()
 }
 function opensignupwindow(){
@@ -72,14 +72,14 @@ function signup(){
                 document.cookie = `token=${res['token']};expires=${d};path=/;`
                 document.cookie = `email=${res['email']};expires=${d};path=/;`
                 document.cookie = `password=${res['password']};expires=${d};path=/;`
-                location.replace(`http://localhost:4000/mainpage`)
+                location.replace(`http://10.107.115.212:4000/mainpage`)
             }
             else{
                 document.getElementById('error-lbl15').style.visibility = 'visible'
             }
         }
     }
-    xhr.open('POST',`http://localhost:4000/signup?email=${email}&password=${password}&name=${name}`)
+    xhr.open('POST',`http://10.107.115.212:4000/signup?email=${email}&password=${password}&name=${name}`)
     xhr.send()
 }
 document.getElementById('p1').onclick = ()=>{
@@ -120,5 +120,5 @@ for(let i=0;i<cookies.length;i++){
     if(key=='password') userdetails['password'] = v[1]
 }
 if(userdetails['loggedin']){
-    location.replace('http://localhost:4000/mainpage')
+    location.replace('http://10.107.115.212:4000/mainpage')
 }

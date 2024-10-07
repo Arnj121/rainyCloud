@@ -4,11 +4,18 @@ const ip=process.argv[2]
 const newip=process.argv[3]
 const options = { family: 4 };
 const os = require('node:os');
+require('dotenv').config()
+
+if(ip){}
+else{
+    ip=process.env.HOST
+}
 
 dns.lookup(os.hostname(), options, (err, addr) => {
+    console.log("replacing with " + addr)
     if (!err) {
-        let files = ['static/login/template.html','static/login/script.js', 'static/app/index.html',
-            'static/PWA/manifest.json','static/PWA/sw.js','static/app/script.js','conf/nginx.conf','backend/.env']
+        let files = ['webpack/template.html', 'static/PWA/manifest.json', 'static/PWA/sw.js', 'static/app/script.js',
+            'static/dist/bundle.js', '.env']
         for (let i = 0; i < files.length; i++) {
             let m = 0
             fs.readFile(files[i], 'UTF-8', (err, data) => {
@@ -16,10 +23,11 @@ dns.lookup(os.hostname(), options, (err, addr) => {
                 else {
                     let loc = data.indexOf(ip)
                     while (loc != -1) {
-                        if(newip.length>0)
-                            data = data.replace(ip, newip)
+                        console.log("replacing")
+                        if(newip)
+                           data = data.replace(ip, newip)
                         else
-                            data = data.replace(ip, addr)
+                           data = data.replace(ip, addr)
                         m = 1
                         loc = data.indexOf(ip)
                     }
