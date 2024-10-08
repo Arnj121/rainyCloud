@@ -59,6 +59,7 @@ server.use(bodyparser.urlencoded({extended: false}))
 server.use(bodyparser.json())
 server.use(fileUpload())
 server.use('/resource',express.static(path.join(__dirname,'static')))
+server.use('/files',express.static(path.join(__dirname,'serverfiles')))
 
 imageserver.use(cors(corsoptions))
 imageserver.use('/images',express.static(path.join(__dirname,'serverimages')))

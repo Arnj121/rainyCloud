@@ -66,7 +66,8 @@ const uploadFile = (req,res)=>{
         if(err)console.log(err)
     })
     let formdata=new FormData()
-    formdata.set('file',file)
+    formdata.set('filepath',`http://${process.env.HOST}:${process.env.APP_PORT}/files/${token}/${name}`)
+    formdata.set('path',true)
     axios.post('http://127.0.0.1:2005/analyze',formdata)
     fileDbsave({'name':name,'lastmod':lastmodified,'size':size,'mimetype':mimetype,'fav':0},token,cwdstring,'file')
     console.log(dest,'from upload file')
@@ -87,7 +88,8 @@ const uploadImage = (req,res)=>{
         if(err)console.log(err)
     })
     let formdata=new FormData()
-    formdata.set('file',file)
+    formdata.set('filepath',`http://${process.env.HOST}:${process.env.IMG_PORT}/images/${token}/${name}`)
+    formdata.set('path',true)
     let stype = 'image',port=2001
     if(mimetype.indexOf('video')!=-1) {
         stype = 'video'
