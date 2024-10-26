@@ -6,3 +6,4 @@ cloudDriveShots.pdf
 .gitignore
 serverfiles
 serverimages
+Dockerfile

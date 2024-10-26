@@ -10,4 +10,4 @@ COPY . .
 EXPOSE 3000
 EXPOSE 4000
 
-CMD npm build && npm start
+CMD npm run build && npm start

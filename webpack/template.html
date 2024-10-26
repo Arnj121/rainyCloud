@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title><%= htmlWebpackPlugin.options.title %></title>
-    <link href="http://localhost:2045/fontawesome.css" rel="stylesheet" type="text/css"/>
+    <link href="http://host.docker.internal:2045/fontawesome.css" rel="stylesheet" type="text/css"/>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
     </style>
-    <link rel="manifest" href="http://localhost:4000/resource/PWA/manifest.json">
+    <link rel="manifest" href="http://host.docker.internal:4000/resource/PWA/manifest.json">
 </head>
 <body>
     <div id="header">
@@ -460,7 +460,7 @@
 </body>
 <script>
     if('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('http://localhost:4000/resource/PWA/sw.js', { scope: 'http://localhost:4000/resource/PWA/' });
+        navigator.serviceWorker.register('http://host.docker.internal:4000/resource/PWA/sw.js', { scope: 'http://host.docker.internal:4000/resource/PWA/' });
     }
 </script>
 </html>

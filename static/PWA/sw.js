@@ -5,7 +5,7 @@ self.addEventListener('install', event => {
     event.waitUntil((async () => {
         const cache = await caches.open(CACHE_NAME);
         cache.addAll([
-            'http://localhost:4000/resource/dist/bundle.js',
+            'http://host.docker.internal:4000/resource/dist/bundle.js',
         ]);
     })());
 });
