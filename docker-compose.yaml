@@ -1,0 +1,24 @@
+services:
+  rainyCloud:
+    build: .
+    container_name: rainyCloudServer
+    ports:
+      - 3001:3000
+      - 4000:4000
+    volumes:
+      - serverfiles:/app/serverfiles
+      - serverimages:/app/serverimages
+
+volumes:
+  serverfiles:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: D:/webstorm/rainyCloud/serverfiles
+  serverimages:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: D:/webstorm/rainyCloud/serverimages
