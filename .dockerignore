@@ -4,3 +4,5 @@ docker-compose.yaml
 README.md
 cloudDriveShots.pdf
 .gitignore
+serverfiles
+serverimages
