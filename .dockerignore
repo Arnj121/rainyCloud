@@ -1,0 +1,6 @@
+node_modules
+.dockerignore
+docker-compose.yaml
+README.md
+cloudDriveShots.pdf
+.gitignore

@@ -1,7 +1,5 @@
 node_modules
 .idea
-.dockerignore
-dockerfile
 .env
 serverfiles
 serverimages

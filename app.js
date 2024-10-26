@@ -3,6 +3,8 @@ const bodyparser = require('body-parser')
 const fileUpload = require('express-fileupload')
 const fileprocessor = require('./backend/FileProcessor')
 const loginsignup =require('./backend/login-signup')
+const dns= require('node:dns')
+const os= require('node:os')
 const path = require('path')
 const fs=require('fs')
 const logger = require('morgan');
@@ -109,13 +111,15 @@ server.post('/removefav',fileprocessor.removefav)
 server.get('/spaceanalysis',fileprocessor.spaceanalysis)
 server.post('/removecol',fileprocessor.removecol)
 server.post('/removefromcol',fileprocessor.removefromcol)
+
 imageserver.get('/images/:token/:imagename',(req,res)=>{
     res.sendFile(path.join(__dirname,'serverimages',req.params.token,req.params.imagename))
 })
-
-server.listen(process.env.APP_PORT,process.env.HOST,()=>{
-    console.log(`listening on http://${process.env.HOST}:${process.env.APP_PORT}/`)
-})
-imageserver.listen(process.env.IMG_PORT,process.env.HOST,()=>{
-    console.log(`listening on http://${process.env.HOST}:${process.env.IMG_PORT}/images/`)
+dns.lookup(os.hostname(),{'family':4},(err,addr)=>{
+    server.listen(process.env.APP_PORT,addr,()=>{
+        console.log(`listening on http://${addr}:${process.env.APP_PORT}/`)
+    })
+    imageserver.listen(process.env.IMG_PORT,addr,()=>{
+        console.log(`listening on http://${addr}:${process.env.IMG_PORT}/images/`)
+    })
 })
