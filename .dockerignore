@@ -1,6 +1,7 @@
+.idea
 node_modules
 .dockerignore
-docker-compose.yaml
+docker-compose-rainycloud.yaml
 README.md
 cloudDriveShots.pdf
 .gitignore
